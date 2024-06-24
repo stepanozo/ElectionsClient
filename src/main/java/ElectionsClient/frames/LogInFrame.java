@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package electionsClient.frames;
+package ElectionsClient.frames;
 
 
 import electionsClient.Exceptions.HTTPException;
@@ -11,6 +11,7 @@ import electionsClient.HTTP.HTTPUtil;
 import electionsClient.security.LoginData;
 import java.sql.*;
 import java.time.LocalDateTime;
+import ElectionsClient.frames.RegistrationFrame;
 /**
  *
  * @author student
@@ -19,6 +20,7 @@ public class LogInFrame extends javax.swing.JFrame {
 
     
     private boolean mustCloseConnection;
+    
     
     /**
      * Creates new form logInFrame
@@ -127,7 +129,14 @@ public class LogInFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void registrationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrationButtonActionPerformed
-
+        RegistrationFrame registrationFrame = new RegistrationFrame();
+        registrationFrame.setLoginFrame(this);
+        registrationFrame.setVisible(true);
+        registrationButton.setEnabled(false);
+        loginButton.setEnabled(false);
+        passwordField.setEnabled(false);
+        loginField.setEnabled(false);
+        //registrationFrame.setLoginFrame(this);
     }//GEN-LAST:event_registrationButtonActionPerformed
 
     public void showConnectionErrorMessage(){
@@ -139,10 +148,16 @@ public class LogInFrame extends javax.swing.JFrame {
         try{
            LoginData loginData = new LoginData(loginField.getText(), String.valueOf(passwordField.getPassword()));
            
-           if(HTTPUtil.tryLogIn(loginData))
-               new InfoFrame("Успешный вход!").setVisible(true);
-           else
-               new InfoFrame("Неверный логин или пароль!").setVisible(true);
+            if(isLoginCorrect(loginData.getLogin())){
+                
+                if(isPasswordCorrect(loginData.getPassword())){
+                    if(HTTPUtil.tryLogIn(loginData))
+                        new InfoFrame("Успешный вход!").setVisible(true); //Не забыть проверить, админ юзер или нет
+                    else
+                        new InfoFrame("Неверный логин или пароль!").setVisible(true);
+                }   else wrongPasswordLabel.setText("Некорректно введён пароль");
+            } else wrongPasswordLabel.setText("Некорректно введён логин");
+           
         } catch (HTTPException e){
             new InfoFrame(e.getMessage()).setVisible(true);
         }

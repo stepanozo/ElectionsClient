@@ -30,7 +30,7 @@ public class Candidate {
     private final int yearOfBirth;
     
     @Getter
-    private final String placeofliving;
+    private final String placeOfLiving;
     
     @Getter
     private final String party;
@@ -45,7 +45,7 @@ public class Candidate {
     public Candidate(String name, int yearOfBirth, String placeOfLiving, String party, String information, int votes){
         this.name = name;
         this.yearOfBirth = yearOfBirth;
-        this.placeofliving = placeOfLiving;
+        this.placeOfLiving = placeOfLiving;
         this.party = party;
         this.information = information;
         this.votes = votes;
@@ -84,7 +84,7 @@ public class Candidate {
         return 
             Objects.equals(candidate.name, this.name) && 
             candidate.yearOfBirth == this.yearOfBirth && 
-            Objects.equals(candidate.placeofliving, this.placeofliving) &&
+            Objects.equals(candidate.placeOfLiving, this.placeOfLiving) &&
             Objects.equals(candidate.party, this.party) &&
             Objects.equals(candidate.information, this.information) && 
             candidate.votes == this.votes;
@@ -95,7 +95,7 @@ public class Candidate {
         return 
             name.hashCode() + 
             ((Integer)yearOfBirth).hashCode() +
-            placeofliving.hashCode() +
+            placeOfLiving.hashCode() +
             party.hashCode() +
             information.hashCode() +
             ((Integer)votes).hashCode();
@@ -110,7 +110,7 @@ public class Candidate {
                 "Партия: '%s' \n" +
                 "Информация: '%s' \n" +
                 "Количество голосов: %d \n",
-                name, yearOfBirth, placeofliving, party, information, votes
+                name, yearOfBirth, placeOfLiving, party, information, votes
         );
     }
 }

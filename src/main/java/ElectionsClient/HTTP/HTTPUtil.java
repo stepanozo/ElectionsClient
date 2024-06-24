@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import electionsClient.security.LoginData;
 import java.net.http.HttpRequest.BodyPublishers;
+import org.springframework.http.HttpStatus;
 
 /**
  *
@@ -28,12 +29,10 @@ public class HTTPUtil {
         
         String requestUrl = serverUrl + "/users/login";
         // Создаем JSON тело запроса
-        
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         
         String json = gson.toJson(loginData);
-        
         
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(requestUrl)).
@@ -56,6 +55,29 @@ public class HTTPUtil {
             throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
         }
                 
+    }
+    
+    public static HttpResponse<String> tryRegister(LoginData loginData) throws HTTPException{
+        
+        String requestUrl = serverUrl + "/users/register";
+        // Создаем JSON тело запроса
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        
+        String json = gson.toJson(loginData);
+        
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(requestUrl)).
+                header("Content-Type", "application/json").
+                POST(BodyPublishers.ofString(json)).
+                build();
+        
+        try{
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response;
+        } catch(IOException | InterruptedException e){
+            throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
+        }
     }
     
 }

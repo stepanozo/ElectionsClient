@@ -1,6 +1,6 @@
 package electionsClient.application;
 
-import electionsClient.frames.LogInFrame;
+import ElectionsClient.frames.LogInFrame;
 import javax.swing.SwingUtilities;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
