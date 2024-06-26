@@ -155,10 +155,13 @@ public class RegistrationFrame extends javax.swing.JFrame {
                             break;
                         case HttpStatus.CONFLICT:
                             cantRegisterLabel.setText("Такой пользователь уже существует.");
+                            break;
                         case HttpStatus.INTERNAL_SERVER_ERROR:
                             cantRegisterLabel.setText("Внутренняя ошибка сервера");
+                            break;
                         default:
                             cantRegisterLabel.setText("Статус: " + response.statusCode());
+                            break;
                     }
                     
                 }   else cantRegisterLabel.setText("Некорректно введён пароль");
