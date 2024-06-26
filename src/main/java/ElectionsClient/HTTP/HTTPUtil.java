@@ -4,6 +4,7 @@
  */
 package electionsClient.HTTP;
 
+import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
 import electionsClient.Exceptions.HTTPException;
 import java.io.IOException;
 import java.net.URI;
@@ -12,6 +13,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import electionsClient.Exceptions.NoSuchUserException;
+import electionsClient.model.User;
 import electionsClient.security.LoginData;
 import java.net.http.HttpRequest.BodyPublishers;
 import org.springframework.http.HttpStatus;
@@ -25,7 +28,7 @@ public class HTTPUtil {
     
     static String serverUrl = "http://localhost:8080";
     
-    public static boolean tryLogIn(LoginData loginData) throws HTTPException{
+    public static User tryLogIn(LoginData loginData) throws HTTPException, WrongLoginOrPasswordException{
         
         String requestUrl = serverUrl + "/users/login";
         // Создаем JSON тело запроса
@@ -41,13 +44,15 @@ public class HTTPUtil {
                 build();
         
         try{
-            int statusCode = client.send(request, HttpResponse.BodyHandlers.ofString()).statusCode();
-
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+           
+            HttpStatus statusCode = HttpStatus.resolve(response.statusCode());
+            
             switch (statusCode) {
-                case 200:
-                    return true;
-                case 401:
-                    return false;
+                case HttpStatus.OK:
+                    return gson.fromJson(response.body(), User.class);
+                case HttpStatus.UNAUTHORIZED:
+                    throw new WrongLoginOrPasswordException("Неверный логин или пароль");
                 default:
                     throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
             }

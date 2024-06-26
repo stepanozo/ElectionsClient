@@ -6,6 +6,8 @@
 package ElectionsClient.frames;
 
 
+import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
+import ElectionsClient.application.ApplicationState;
 import electionsClient.Exceptions.HTTPException;
 import electionsClient.HTTP.HTTPUtil;
 import electionsClient.security.LoginData;
@@ -151,14 +153,22 @@ public class LogInFrame extends javax.swing.JFrame {
             if(isLoginCorrect(loginData.getLogin())){
                 
                 if(isPasswordCorrect(loginData.getPassword())){
-                    if(HTTPUtil.tryLogIn(loginData))
-                        new InfoFrame("Успешный вход!").setVisible(true); //Не забыть проверить, админ юзер или нет
-                    else
-                        new InfoFrame("Неверный логин или пароль!").setVisible(true);
+                    ApplicationState.setCurrentUser(HTTPUtil.tryLogIn(loginData));
+                    
+                    if(ApplicationState.getCurrentUser().isAdmin()){
+                            AdminFrame adminFrame = new AdminFrame();
+                            adminFrame.setVisible(true);
+                            dispose();
+                    }
+                        else
+                    {
+                        //Здесь в будущем будем запускать голосование (но сначала проверку на то, что оно вообще идёт
+                    }
+                       
                 }   else wrongPasswordLabel.setText("Некорректно введён пароль");
             } else wrongPasswordLabel.setText("Некорректно введён логин");
            
-        } catch (HTTPException e){
+        } catch (HTTPException | WrongLoginOrPasswordException e){
             new InfoFrame(e.getMessage()).setVisible(true);
         }
                

@@ -3,8 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package electionsClient.model;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import java.util.Objects;
 import lombok.Data;
+import lombok.Getter;
 
 /**
  *
@@ -15,22 +18,25 @@ public class User {
     
     
     //Всем полям даём пустые значения по умолчанию, т.к. это нужно для пустого конструктора, без которого не будет работать Hibernate.
+    @Expose
+    @SerializedName("login")
+    @Getter
     private String login ="";
     
+    @Expose
+    @SerializedName("passwordHash")
+    @Getter
     private String passwordHash = "";
+    
+    @Expose
+    @SerializedName("voted")
+    @Getter
     private boolean voted = false;
     
+    @Expose
+    @SerializedName("admin")
+    @Getter
     private boolean isAdmin = false;
-    
-    
-//    //Тот же метод, что и конструктор, но в него передаётся не хеш, а пароль, который хешируется
-//    public static User hashAndCreate(String login, String password, boolean voted, boolean isAdmin){
-//        return new User(login, MD5Hashing.hashPassword(password), voted, isAdmin);
-//    }
-    
-    public User(){
-        //Этот пустой конструктор попросил меня сделать Hibernate, без него он отказывается работать с базой данных.
-    }
     
     public User(String login, String passwordHash, boolean voted, boolean isAdmin){
         this.login = login;
