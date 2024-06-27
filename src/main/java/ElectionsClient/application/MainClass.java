@@ -10,17 +10,8 @@ package ElectionsClient.application;
  */
 public class MainClass {
     
-   
-    
-    private static String myLogin;
     private static Thread waiterThread;
-    
-    public static String getMyLogin(){
-        return myLogin;
-    }
-    public static void setMyLogin(String login){
-        myLogin = login;
-    }
+
     public static Thread getWaiterThread(){
         return waiterThread;
     }

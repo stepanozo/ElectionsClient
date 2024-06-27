@@ -8,6 +8,7 @@ package ElectionsClient.frames;
 
 import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
 import ElectionsClient.application.ApplicationState;
+import ElectionsClient.application.Elections;
 import electionsClient.Exceptions.HTTPException;
 import electionsClient.HTTP.HTTPUtil;
 import electionsClient.security.LoginData;
@@ -162,7 +163,22 @@ public class LogInFrame extends javax.swing.JFrame {
                     }
                         else
                     {
-                        //Здесь в будущем будем запускать голосование (но сначала проверку на то, что оно вообще идёт
+                         if(HTTPUtil.electionsHaveRecords() &&
+                                    LocalDateTime.now().isAfter(Elections.getDateTimeOfBegining()) )
+                            {
+                                if(LocalDateTime.now().isBefore(Elections.getDateTimeOfEnding())){
+                                    VoteFrame voteFrame = new VoteFrame();
+                                    voteFrame.setVisible(true);
+                                } else{
+                                    ElectionsResultFrame resultFrame = new ElectionsResultFrame();
+                                    resultFrame.setVisible(true);
+                                }
+                                mustCloseConnection = false;
+                                dispose();
+                            }
+                            else{
+                                new InfoFrame("Выборы в данный момент не проводятся.").setVisible(true);
+                            }
                     }
                        
                 }   else wrongPasswordLabel.setText("Некорректно введён пароль");
@@ -172,46 +188,6 @@ public class LogInFrame extends javax.swing.JFrame {
             new InfoFrame(e.getMessage()).setVisible(true);
         }
                
-
-//         try{
-//           String password = String.valueOf(passwordField.getPassword());
-//           String login = loginField.getText();
-//           if(isLoginCorrect(login)){
-//               if(isPasswordCorrect(password)){
-//                    if(UserDAO.successfulLogIn(login, password)){
-//
-//                        MainClass.setMyLogin(login);
-//                        //Проверим, обычный это пользователь или админ
-//                        if(UserDAO.checkIfAdmin(login)){
-//                            AdminFrame adminFrame = new AdminFrame();
-//                            adminFrame.setVisible(true);
-//                            mustCloseConnection = false;
-//                            dispose();
-//                        }else{ 
-//                            if(SQLUtil.checkIfElectionsExist() &&
-//                                    LocalDateTime.now().isAfter(Elections.getDateTimeOfBegining()) )
-//                            {
-//                                if(LocalDateTime.now().isBefore(Elections.getDateTimeOfEnding())){
-//                                    VoteFrame voteFrame = new VoteFrame();
-//                                    voteFrame.setVisible(true);
-//                                } else{
-//                                    ElectionsResultFrame resultFrame = new ElectionsResultFrame();
-//                                    resultFrame.setVisible(true);
-//                                }
-//                                mustCloseConnection = false;
-//                                dispose();
-//                            }
-//                            else{
-//                                MainClass.showInfoFrame("Выборы в данный момент не проводятся.");
-//                            }
-//                        }
-//                    }
-//                    wrongPasswordLabel.setText("Неверный логин или пароль");
-//               } else  wrongPasswordLabel.setText("Некорректный пароль");
-//           } else  wrongPasswordLabel.setText("Некорректный логин");
-//       } catch(SQLException e){
-//           wrongPasswordLabel.setText("Ошибка входа.");
-//       }
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed

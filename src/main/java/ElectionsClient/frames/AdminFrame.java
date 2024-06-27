@@ -4,6 +4,9 @@
  */
 package ElectionsClient.frames;
 
+import ElectionsClient.application.Elections;
+import electionsClient.Exceptions.HTTPException;
+import electionsClient.HTTP.HTTPUtil;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 /**
@@ -167,7 +170,26 @@ public class AdminFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_removeAdminRightsButtonActionPerformed
 
     private void voteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voteButtonActionPerformed
-
+        try{
+            if(HTTPUtil.electionsHaveRecords() &&
+                LocalDateTime.now().isAfter(Elections.getDateTimeOfBegining()) )
+            {
+                if(LocalDateTime.now().isBefore(Elections.getDateTimeOfEnding())){
+                    VoteFrame voteFrame = new VoteFrame();
+                    voteFrame.setVisible(true);
+                } else{
+                    ElectionsResultFrame resultFrame = new ElectionsResultFrame();
+                    resultFrame.setVisible(true);
+                }
+                dispose();
+            }
+            else{
+                new InfoFrame("Выборы в данный момент не проводятся").setVisible(true);
+            }
+        } catch(HTTPException e){
+                new InfoFrame("SQL-ошибка").setVisible(true);
+        }
+        
     }//GEN-LAST:event_voteButtonActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing

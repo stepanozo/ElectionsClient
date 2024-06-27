@@ -25,8 +25,11 @@ import electionsClient.Exceptions.NoCandidatesException;
 import electionsClient.Exceptions.NoElectionsException;
 import electionsClient.Exceptions.NoUsersException;
 import electionsClient.security.LoginData;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import org.springframework.http.HttpStatus;
@@ -97,6 +100,27 @@ public class HTTPUtil {
                 
     }
     
+    public static User getUserByLogin(String login) throws HTTPException {
+        
+        String requestUrl = serverUrl + "/users/" + login;
+        // Создаем JSON тело запроса
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+       
+        
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(requestUrl)).
+                build();
+        
+        try{
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            User user = gson.fromJson(response.body(), User.class);
+            return user;
+        } catch(IOException | InterruptedException e){
+            throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
+        }
+                
+    }
     
     public static boolean electionsHaveRecords() throws HTTPException {
         
@@ -174,6 +198,7 @@ public class HTTPUtil {
             throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
         }
     }
+    
     
     public static HttpResponse<String> newElectionsTime(ElectionsTime electionsTime) throws HTTPException{
         
@@ -296,11 +321,11 @@ public class HTTPUtil {
     
     //Тут бы сделать разные статусы и желательно возврат исключения
     public static void forgetAllVotes() throws HTTPException{
-        String requestUrl = serverUrl + "/users";
+        String requestUrl = serverUrl + "/users/forgetVotes";
         
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(requestUrl))
-            .method("PATCH", HttpRequest.BodyPublishers.ofString("{\"voted\": false}"))
+            .method("PATCH", HttpRequest.BodyPublishers.noBody()) 
             .build();
         
         try{
@@ -309,6 +334,42 @@ public class HTTPUtil {
             throw new HTTPException("Ошибка удаления кандидатов по адресу " + requestUrl, requestUrl);
         }
         
+    }
+    
+    //Тут бы сделать разные статусы и желательно возврат исключения
+    public static void markAsVoted(String login) throws HTTPException{
+        String requestUrl = serverUrl + "/users/" + login + ":mark-as-voted";
+        
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(requestUrl))
+            .method("PATCH", HttpRequest.BodyPublishers.noBody())
+            .build();
+        try{
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e){
+            throw new HTTPException("Ошибка удаления кандидатов по адресу " + requestUrl, requestUrl);
+        }
+        
+    }
+    
+    //Возможно добавить кандидату ID, и тогда не придётся возиться с кодировкой имени. Просто голосовать по ID, а не по имени
+    public static void voteForCandidate(Candidate candidate) throws HTTPException, UnsupportedEncodingException{
+        voteForCandidateById(candidate.getId());
+    }
+    
+    public static void voteForCandidateById(long id) throws HTTPException, UnsupportedEncodingException{
+        
+        String requestUrl = serverUrl + "/candidates/" + id + ":vote";
+        
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(requestUrl))
+            .method("PATCH", HttpRequest.BodyPublishers.noBody())
+            .build();
+        try{
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e){
+            throw new HTTPException("Ошибка голосвания за кандитата по запросу" + requestUrl, requestUrl);
+        }
     }
     
 }

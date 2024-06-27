@@ -5,6 +5,12 @@
 package ElectionsClient.frames;
 
 
+import ElectionsClient.application.ApplicationState;
+import ElectionsClient.application.Elections;
+import ElectionsClient.application.MainClass;
+import ElectionsClient.model.Candidate;
+import electionsClient.Exceptions.HTTPException;
+import electionsClient.HTTP.HTTPUtil;
 import java.sql.SQLException;
 import java.util.HashSet;
 import javax.swing.JLabel;
@@ -16,13 +22,37 @@ import javax.swing.JLabel;
 public class ElectionsResultFrame extends javax.swing.JFrame {
     private final int MAX_CANDIDATES = 8;
     private JLabel[] labelArray;
-    private boolean mustCloseConnection;
     
     /**
      * Creates new form ElectionsResultFrame
      */
     public ElectionsResultFrame() {
-
+        setLocationRelativeTo(null);
+        initComponents();
+        labelArray = new JLabel[]{
+        jLabel0,
+        jLabel1,
+        jLabel2,
+        jLabel3,
+        jLabel4,
+        jLabel5,
+        jLabel6,
+        jLabel7
+        };
+                
+        int numberOfCandidates = Elections.getNumberOfCandidates();
+        HashSet<Candidate> candidates = Elections.getCandidates();
+        for(int i = MAX_CANDIDATES-1; i >= numberOfCandidates; i--){
+            labelArray[i].setVisible(false);
+        }
+       
+        int i =0;
+        for(Candidate candidate: candidates){
+            labelArray[i].setText(
+                    candidate.getName() + " - " + Elections.percentageOfVotes(candidate, candidates) + " % голосов"
+            );
+            i++;
+        }
     }
 
     /**
@@ -132,6 +162,20 @@ public class ElectionsResultFrame extends javax.swing.JFrame {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
 
+        try{
+            if(HTTPUtil.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+                new AdminFrame().setVisible(true);
+            } else{
+                LogInFrame logInFrame = new LogInFrame();
+                logInFrame.setVisible(true);
+            }
+        } catch (HTTPException e){
+            LogInFrame logInFrame = new LogInFrame();
+            logInFrame.setVisible(true);
+            logInFrame.showConnectionErrorMessage();
+        } finally {
+            dispose();
+        }
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed

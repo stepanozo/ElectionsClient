@@ -5,6 +5,10 @@
 package ElectionsClient.frames;
 
 
+import ElectionsClient.application.Elections;
+import ElectionsClient.model.Candidate;
+import electionsClient.Exceptions.HTTPException;
+import electionsClient.HTTP.HTTPUtil;
 import java.util.stream.Collectors;
 import java.util.*;
 import java.util.function.Predicate;
@@ -153,7 +157,33 @@ public class FilterFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
+        try{
 
+            Predicate<Candidate> pred= candidate -> true;
+
+            if(ageCheckbox.isSelected()){
+                if(ageComboBox.getSelectedIndex()==0)
+                    pred = pred.and(candidate -> LocalDateTime.now().getYear() - candidate.getYearOfBirth() > Integer.parseInt(ageTextField.getText()));
+                else if(ageComboBox.getSelectedIndex() == 1)
+                    pred = pred.and(candidate -> LocalDateTime.now().getYear() - candidate.getYearOfBirth() < Integer.parseInt(ageTextField.getText()));
+            }
+
+            if(partyCheckbox.isSelected())
+                pred = pred.and(candidate -> Objects.equals(candidate.getParty(), partyTextField.getText()));
+            if(cityCheckbox.isSelected())
+                pred = pred.and(candidate -> Objects.equals(candidate.getPlaceOfLiving(), cityTextField.getText()));
+
+
+            voteFrame.showCandidates(
+                    HTTPUtil.getCandidates().stream().filter(pred)
+                    .collect(Collectors.toCollection(HashSet::new)) //Здесь преобразуем в HashSet, который принимается методом showCandidates
+                    );
+            dispose();
+        } catch(NumberFormatException e){
+            new InfoFrame("Неверно введен возраст кандидата.").setVisible(true);
+        } catch(HTTPException e){
+            new InfoFrame("Не удалось получить список кандидатов").setVisible(true);
+        }
     }//GEN-LAST:event_applyButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

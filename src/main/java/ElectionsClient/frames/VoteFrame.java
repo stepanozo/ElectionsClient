@@ -4,6 +4,15 @@
  */
 package ElectionsClient.frames;
 
+import ElectionsClient.application.ApplicationState;
+import ElectionsClient.application.Elections;
+import ElectionsClient.model.Candidate;
+import ElectionsClient.model.User;
+import electionsClient.Exceptions.HTTPException;
+import electionsClient.Exceptions.NoSuchCandidateException;
+import electionsClient.Exceptions.NoSuchUserException;
+import electionsClient.HTTP.HTTPUtil;
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.sql.*;
 import javax.swing.JCheckBox;
@@ -16,8 +25,12 @@ import java.util.HashMap;
  */
 public class VoteFrame extends javax.swing.JFrame {
 
-    
-    
+    private final int MAX_CANDIDATES = 8;
+    private JCheckBox[] checkBoxArray;
+    private JButton[] candidateButtonsArray;
+    private int choice;
+    private int numberOfCandidates;
+    private HashMap<Integer, Candidate> numberAndCandidate;
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -287,13 +300,96 @@ public class VoteFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public VoteFrame() {
+        setLocationRelativeTo(null);
+        initComponents();
+        checkBoxArray = new JCheckBox[]{
+        jCheckBox0,
+        jCheckBox1,
+        jCheckBox2,
+        jCheckBox3,
+        jCheckBox4,
+        jCheckBox5,
+        jCheckBox6,
+        jCheckBox7
+        };
+        candidateButtonsArray = new JButton[]{
+        jButton0,
+        jButton1,
+        jButton2,
+        jButton3,
+        jButton4,
+        jButton5,
+        jButton6,
+        jButton7,
+        };
+        Elections.setVoteFrame(this);
+        numberOfCandidates = Elections.getNumberOfCandidates();
+        choice = -1;
+
+        
+        try{
+            showCandidates(HTTPUtil.getCandidates());
+            User user = HTTPUtil.getUserByLogin((ApplicationState.getCurrentUser().getLogin()));
+            if(user.isVoted())
+                voteButton.setEnabled(false);
+        } catch (HTTPException e){
+            new InfoFrame("Ошибка HTTP-запроса").setVisible(true);
+        }
+    }
+    
+    private void showCandidate(int i){
+       enableAllButtons(false);
+       CandidateFrame candidateFrame = new CandidateFrame(numberAndCandidate.get(i));
+       candidateFrame.setVisible(true);
+       candidateFrame.setVoteFrame(this);
+    }
+    
+    public void showCandidates(HashSet<Candidate> candidates){
+        choice = -1;
+        numberOfCandidates = candidates.size();
+        for(int i = MAX_CANDIDATES-1; i >= candidates.size(); i--){
+            checkBoxArray[i].setVisible(false);
+            candidateButtonsArray[i].setVisible(false);
+        }
+        
+        numberAndCandidate = new HashMap();
+        int i =0;
+        for(Candidate candidate: candidates){
+            numberAndCandidate.put(i, candidate);
+            checkBoxArray[i].setText(candidate.getName());
+            checkBoxArray[i].setVisible(true);
+            checkBoxArray[i].setSelected(false);
+            candidateButtonsArray[i].setVisible(true);
+            i++;
+        }
+    }
     
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        
+        try{
+            if(HTTPUtil.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+                new AdminFrame().setVisible(true);
+            } else{
+                LogInFrame logInFrame = new LogInFrame();
+                logInFrame.setVisible(true);
+            }
+        } catch (HTTPException e){
+            LogInFrame logInFrame = new LogInFrame();
+            logInFrame.setVisible(true);
+            logInFrame.showConnectionErrorMessage();
+        } finally {
+            dispose();
+        }
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void selectCandidate(int numberOfCheckbox){
-
+         if(checkBoxArray[numberOfCheckbox].isSelected())
+            for(int i = 0; i< MAX_CANDIDATES; i++){
+                if(i!=numberOfCheckbox){
+                    checkBoxArray[i].setSelected(false);
+                }
+            }
+        choice = numberOfCheckbox;
     }
     
     private void jCheckBox0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox0ActionPerformed
@@ -329,12 +425,30 @@ public class VoteFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox7ActionPerformed
 
     private void voteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voteButtonActionPerformed
+        if(choice == -1){
+            new InfoFrame("Сначала выберите кандидата").setVisible(true);
+        } else {
+            try{
 
+                User user = HTTPUtil.getUserByLogin(ApplicationState.getCurrentUser().getLogin());
+                if(!user.isVoted()){
+                    HTTPUtil.voteForCandidate(numberAndCandidate.get(choice));
+                    HTTPUtil.markAsVoted(user.getLogin());
+                    voteButton.setEnabled(false);
+                    new InfoFrame("Ваш голос успешно зарегистрирован").setVisible(true);
+                } else {
+                    new InfoFrame("Вы уже голосовали").setVisible(true);
+                    voteButton.setEnabled(false);
+                }
+            } catch (HTTPException e){
+                new InfoFrame("Ошибка соединения с сервером").setVisible(true);
+            } catch (UnsupportedEncodingException e) {
+                new InfoFrame("Ошибка кодировки имени кандидата").setVisible(true);
+            }
+                
+        }
     }//GEN-LAST:event_voteButtonActionPerformed
 
-    private void showCandidate(int i){
-
-    }
     
     private void jButton0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton0ActionPerformed
         showCandidate(0);
@@ -376,16 +490,24 @@ public class VoteFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_filterButtonActionPerformed
 
     private void cancelFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelFilterActionPerformed
-
+        showCandidates(Elections.getCandidates());
     }//GEN-LAST:event_cancelFilterActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        
+                
     }//GEN-LAST:event_formWindowClosed
 
     
     public void enableAllButtons(boolean value){
-
+        for(int i = 0; i < MAX_CANDIDATES; i++){
+            checkBoxArray[i].setEnabled(value);
+            candidateButtonsArray[i].setEnabled(value);
+        }
+        
+        cancelButton.setEnabled(value);
+        voteButton.setEnabled(value);
+        cancelFilter.setEnabled(value);
+        filterButton.setEnabled(value);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
