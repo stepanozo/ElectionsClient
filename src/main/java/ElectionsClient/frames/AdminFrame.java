@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
  * @author чтепоноза
  */
 public class AdminFrame extends javax.swing.JFrame {
-
-    private boolean mustCloseConnection;
     
     /**
      * Creates new form AdminFrame
@@ -20,7 +18,6 @@ public class AdminFrame extends javax.swing.JFrame {
     public AdminFrame() {
         setLocationRelativeTo(null);
         initComponents();
-        mustCloseConnection = true;
     }
     public void enableAllButtons(){
         newElectionsButton.setEnabled(true);
@@ -138,7 +135,8 @@ public class AdminFrame extends javax.swing.JFrame {
     }
     
     public void notAdminAnymore(){
-
+         InfoFrame errorFrame = new InfoFrame("У вас больше нет прав админа.");
+         errorFrame.setVisible(true);
     }
     
     public void blockAdminButtons(){
@@ -148,7 +146,9 @@ public class AdminFrame extends javax.swing.JFrame {
     }
     
     private void newElectionsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newElectionsButtonActionPerformed
-
+        NewElectionsFrame newElectionsFrame = new NewElectionsFrame();
+        newElectionsFrame.setAdminFrame(this);
+        newElectionsFrame.setVisible(true);
            
     }//GEN-LAST:event_newElectionsButtonActionPerformed
 

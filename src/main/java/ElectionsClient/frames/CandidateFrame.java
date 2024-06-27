@@ -4,7 +4,7 @@
  */
 package ElectionsClient.frames;
 
-import electionsClient.model.Candidate;
+import ElectionsClient.model.Candidate;
 
 
 /**

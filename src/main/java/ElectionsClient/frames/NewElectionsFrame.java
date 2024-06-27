@@ -4,15 +4,33 @@
  */
 package ElectionsClient.frames;
 
+import ElectionsClient.application.ApplicationState;
+import ElectionsClient.application.Elections;
+import ElectionsClient.application.FilesUtil;
+import ElectionsClient.application.MainClass;
+import ElectionsClient.application.Waiter;
+import ElectionsClient.model.Candidate;
+import ElectionsClient.model.ElectionsTime;
+import electionsClient.Exceptions.HTTPException;
+import electionsClient.HTTP.HTTPUtil;
+import ElectionsClient.model.User;
+import electionsClient.Exceptions.NoCandidatesException;
+import electionsClient.Exceptions.NoElectionsException;
+import electionsClient.Exceptions.NoSuchFolderException;
+import electionsClient.Exceptions.NoUsersException;
+import electionsClient.Exceptions.TooManyCandidatesException;
+import electionsClient.Exceptions.UnableToReadFileException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.time.format.DateTimeParseException;
 import java.util.HashSet;
+import org.springframework.http.HttpStatus;
 /**
  *
  * @author чтепоноза
@@ -147,9 +165,123 @@ public class NewElectionsFrame extends javax.swing.JFrame {
         startButton.setEnabled(false);
     }
     
+     private void savePreviousElections() throws NoElectionsException, NoCandidatesException, NoUsersException{
+        
+        String currentDir = System.getProperty("user.dir");
+        File folder = new File(currentDir + "\\Save");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        String path = folder.getPath();
+        
+        int i = 1;
+        File file = new File(folder + "\\Elections" + i +".txt");
+        while(file.exists()){
+            file = new File(folder + "\\Elections" + i +".txt");
+            i++;
+        }
+        try(FileWriter writer = new FileWriter(file.getPath())) {;
+            
+            ElectionsTime electionsTime = HTTPUtil.getLatestElectionsTime();
+        
+            writer.write("Начало выборов: " + electionsTime.getDateTimeOfBegining().toString() + "\n");
+            writer.append("Конец выборов: " + electionsTime.getDateTimeOfEnding().toString() + "\n");
+            writer.append("Результаты выборов: \n");
+            
+            HashSet<Candidate> candidates = HTTPUtil.getCandidates();
+ 
+            for(Candidate candidate : candidates)
+                writer.append(candidate.getName() + " - " + Elections.percentageOfVotes(candidate, candidates) + "% голосов \n");
+            
+            HashSet<User> users = HTTPUtil.getUsers();
+            
+            int sumVotes = users.stream()
+                   .mapToInt(user -> (user.isVoted()) ? 1 : 0) 
+                   .sum(); 
+            writer.append("Всего человек проголосовало " +sumVotes); 
+            writer.append('\n');
+            
+            writer.append("Явка составила: " + sumVotes* 100/users.size() + " %\n");
+            
+            writer.append("\nПриходили на выборы:\n ");
+            for(User user : users)
+                if(user.isVoted())
+                    writer.append(user.toString() + "\n");
+             
+            writer.append("\n\nУчаствовавшие кандидаты: \n\n");
+            for(Candidate candidate : candidates) {
+                writer.append(candidate.toString() + "\n\n");
+            }
+            writer.append("\n");
+           
+            writer.flush();
+        } catch (IOException e) {
+            new InfoFrame("Не получилось создать файл").setVisible(true);
+        } catch (HTTPException e){
+            new InfoFrame(e.getMessage()).setVisible(true);
+        }
+    }
+    
     
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-          
+        try{ //Проверим, что пользователь всё ещё админ
+           if(HTTPUtil.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+            
+                LocalDateTime beginTime =  LocalDateTime.parse(timeBeginField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                LocalDateTime endTime = LocalDateTime.parse(timeEndField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                if(endTime.isAfter(beginTime)){
+                    
+                    if(HTTPUtil.electionsHaveRecords()){ //Здесь мы должны сгрузить в файл информацию о предыдущих выборах, если они были
+                        savePreviousElections();
+                    }
+                    
+                    ArrayList<Candidate> candidates = FilesUtil.getCandidatesFromFiles(candidateFolderPathField.getText());
+                    
+                    HttpResponse response = HTTPUtil.newElectionsTime(new ElectionsTime(beginTime, endTime));
+                    Elections.setTimeOfBegining(beginTime);
+                    Elections.setTimeOfEnding(endTime);
+                
+                    Elections.deleteAllCandidates();
+                    
+                    HTTPUtil.forgetAllVotes();
+                    HTTPUtil.deleteAllCandidates();
+                    
+                    for(Candidate candidate: candidates){
+                        HTTPUtil.newCandidate(candidate); //Заполняем таблицу кандидатов
+                        Elections.addCandidate(candidate);
+                    }
+                    
+                    //Теперь запустим ожидание конца выборов.
+                    if(MainClass.getWaiterThread() != null && MainClass.getWaiterThread().isAlive()) 
+                        Waiter.setExit(true); //Прерываем старый поток, чтобы он не выдал внезапно результаты старых выборов
+                    Waiter.setExit(false);
+                    MainClass.setWaiterThread(new Thread(Waiter.getInstance()));
+                    MainClass.getWaiterThread().start();
+                    
+                    
+                    dispose();
+                }   
+                else{
+                    new InfoFrame("Окончание выборов должно быть позже начала.").setVisible(true);
+                }
+            }
+            else {
+                blockAdminButtons();
+                adminFrame.blockAdminButtons();
+                adminFrame.notAdminAnymore();
+            }
+        } catch (DateTimeParseException e){
+           new InfoFrame("Неверно введена дата.").setVisible(true);
+        }
+        catch (HTTPException |
+                NoSuchFolderException | 
+                UnableToReadFileException |
+                TooManyCandidatesException |
+                NoElectionsException |
+                NoCandidatesException |
+                NoUsersException e){
+            new InfoFrame(e.getMessage()).setVisible(true);
+        }
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed

@@ -2,9 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package ElectionsClient.application;
+package ElectionsClient.model;
 
-import ElectionsClient.model.User;
+import java.awt.List;
+import java.util.ArrayList;
+import java.util.HashSet;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,10 +14,9 @@ import lombok.Setter;
  *
  * @author чтепоноза
  */
-public class ApplicationState {
+public class UserHashSet {
     
     @Getter
     @Setter
-    private static User currentUser;
-    
+    HashSet<User> hashSet;
 }
