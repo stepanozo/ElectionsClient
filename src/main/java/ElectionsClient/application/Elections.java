@@ -21,7 +21,6 @@ public class Elections {
     private static volatile LocalDateTime dateTimeOfBegining;
     private static volatile LocalDateTime dateTimeOfEnding;
     
-    private static HashSet<Candidate> candidates = new HashSet();
     private static VoteFrame voteFrame; //Храним эту форму здесь, чтобы после окончания выборов её закрыть и заменить на форму результатов выборов.
     private static CandidateFrame candidateFrame;
     private static FilterFrame filterFrame;
@@ -46,10 +45,6 @@ public class Elections {
         candidateFrame = newCandidateFrame;
     }
     
-    public static int getNumberOfCandidates(){
-        return candidates.size();
-    }
-
     public static LocalDateTime getDateTimeOfBegining(){
         return dateTimeOfBegining;
     }
@@ -64,22 +59,6 @@ public class Elections {
     
     public static void setTimeOfEnding(LocalDateTime newDateTimeOfEnding){
         dateTimeOfEnding = newDateTimeOfEnding;
-    }
-    
-    public static void addCandidate(Candidate candidate){
-        candidates.add(candidate);
-    }
-    
-    public static void setCandidates(HashSet<Candidate> newCandidates){
-        candidates = newCandidates;
-    }
-    
-    public static void deleteAllCandidates(){
-        candidates.clear();
-    }
-    
-    public static HashSet<Candidate>  getCandidates(){
-        return candidates;
     }
     
     public static double percentageOfVotes(Candidate candidate, HashSet<Candidate> candidates) {

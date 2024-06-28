@@ -6,11 +6,7 @@ package ElectionsClient.application;
 
 import ElectionsClient.frames.ElectionsResultFrame;
 import ElectionsClient.frames.InfoFrame;
-import electionsClient.Exceptions.HTTPException;
-import electionsClient.Exceptions.NoCandidatesException;
-import electionsClient.HTTP.HTTPUtil;
 import java.time.LocalDateTime;
-import java.sql.SQLException;
 
 /**
  *
@@ -50,24 +46,18 @@ public class Waiter implements Runnable {
         }
     }
     
-    
     @Override
     public void run() {
         waitForTime(Elections.getDateTimeOfEnding()); //Сначала ждём конца выборов
-        try{
-            Elections.setCandidates(HTTPUtil.getCandidates());
-            if(Elections.getVoteFrame() != null){
-                new ElectionsResultFrame().setVisible(true);
-               // Elections.getVoteFrame().setMustCloseConnection(false);
-                Elections.getVoteFrame().dispose();
-                if(Elections.getCandidateFrame() != null)
-                    Elections.getCandidateFrame().dispose();
-                if(Elections.getFilterFrame() != null)
-                    Elections.getFilterFrame().dispose();
-            }
 
-        } catch(HTTPException e){
-            new InfoFrame(e.getMessage()).setVisible(true);
-        } 
+        if(Elections.getVoteFrame() != null){
+            new ElectionsResultFrame().setVisible(true);
+            
+            Elections.getVoteFrame().dispose();
+            if(Elections.getCandidateFrame() != null)
+                Elections.getCandidateFrame().dispose();
+            if(Elections.getFilterFrame() != null)
+                Elections.getFilterFrame().dispose();
+        }
     }
 }

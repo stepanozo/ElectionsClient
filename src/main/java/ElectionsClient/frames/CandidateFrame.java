@@ -4,6 +4,7 @@
  */
 package ElectionsClient.frames;
 
+import ElectionsClient.application.Elections;
 import ElectionsClient.model.Candidate;
 
 
@@ -23,9 +24,21 @@ public class CandidateFrame extends javax.swing.JFrame {
     }
     /**
      * Creates new form CandidateFrame
+     * @param candidate
      */
     public CandidateFrame(Candidate candidate) {
-
+        setLocationRelativeTo(null);
+        initComponents();
+        Elections.setCandidateFrame(this);
+        // Параметры переноса слов
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.append(candidate.getName());
+        textArea.append("\n\n");
+        textArea.append("Год рождения: " + candidate.getYearOfBirth() + "\n");
+        textArea.append("Место проживания: " + candidate.getPlaceOfLiving() + "\n");
+        textArea.append("Партия: " + candidate.getParty()+"\n\n");
+        textArea.append("Информация: \n\n" + candidate.getInformation());
     }
 
     /**

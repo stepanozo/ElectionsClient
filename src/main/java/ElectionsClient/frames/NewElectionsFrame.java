@@ -241,14 +241,11 @@ public class NewElectionsFrame extends javax.swing.JFrame {
                     Elections.setTimeOfBegining(beginTime);
                     Elections.setTimeOfEnding(endTime);
                 
-                    Elections.deleteAllCandidates();
-                    
                     HTTPUtil.forgetAllVotes();
                     HTTPUtil.deleteAllCandidates();
                     
                     for(Candidate candidate: candidates){
                         HTTPUtil.newCandidate(candidate); //Заполняем таблицу кандидатов
-                        Elections.addCandidate(candidate);
                     }
                     
                     //Теперь запустим ожидание конца выборов.

@@ -324,12 +324,13 @@ public class VoteFrame extends javax.swing.JFrame {
         jButton7,
         };
         Elections.setVoteFrame(this);
-        numberOfCandidates = Elections.getNumberOfCandidates();
-        choice = -1;
-
-        
         try{
-            showCandidates(HTTPUtil.getCandidates());
+            
+            HashSet<Candidate> candidates = HTTPUtil.getCandidates();
+            numberOfCandidates = candidates.size();
+            choice = -1;
+
+            showCandidates(candidates);
             User user = HTTPUtil.getUserByLogin((ApplicationState.getCurrentUser().getLogin()));
             if(user.isVoted())
                 voteButton.setEnabled(false);
@@ -490,7 +491,12 @@ public class VoteFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_filterButtonActionPerformed
 
     private void cancelFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelFilterActionPerformed
-        showCandidates(Elections.getCandidates());
+        try{
+            showCandidates(HTTPUtil.getCandidates());
+        } catch (HTTPException e){
+            new InfoFrame("Ошибка соединения").setVisible(true);
+        }
+        
     }//GEN-LAST:event_cancelFilterActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed

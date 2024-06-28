@@ -39,19 +39,25 @@ public class ElectionsResultFrame extends javax.swing.JFrame {
         jLabel6,
         jLabel7
         };
-                
-        int numberOfCandidates = Elections.getNumberOfCandidates();
-        HashSet<Candidate> candidates = Elections.getCandidates();
-        for(int i = MAX_CANDIDATES-1; i >= numberOfCandidates; i--){
-            labelArray[i].setVisible(false);
-        }
-       
-        int i =0;
-        for(Candidate candidate: candidates){
-            labelArray[i].setText(
-                    candidate.getName() + " - " + Elections.percentageOfVotes(candidate, candidates) + " % голосов"
-            );
-            i++;
+        
+        try{
+            HashSet<Candidate> candidates = HTTPUtil.getCandidates();
+
+            int numberOfCandidates = candidates.size();
+
+            for(int i = MAX_CANDIDATES-1; i >= numberOfCandidates; i--){
+                labelArray[i].setVisible(false);
+            }
+
+            int i =0;
+            for(Candidate candidate: candidates){
+                labelArray[i].setText(
+                        candidate.getName() + " - " + Elections.percentageOfVotes(candidate, candidates) + " % голосов"
+                );
+                i++;
+            }
+        } catch (HTTPException e){
+            new InfoFrame("Ошибка запроса").setVisible(true);
         }
     }
 
