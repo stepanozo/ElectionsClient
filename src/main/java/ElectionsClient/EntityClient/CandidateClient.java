@@ -7,15 +7,21 @@ package ElectionsClient.EntityClient;
 import ElectionsClient.Service.*;
 import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.CandidateAlreadyExistsException;
+import ElectionsClient.NewExceptions.InvalidCandidateVoteException;
+import ElectionsClient.NewExceptions.InvalidDeleteException;
 import ElectionsClient.NewExceptions.InvalidForgettingVotesException;
 import ElectionsClient.NewExceptions.InvalidVoteException;
+import ElectionsClient.NewExceptions.NoSuchCandidateIdException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.UserAlreadyExistsException;
+import ElectionsClient.model.Candidate;
 import ElectionsClient.model.User;
 import electionsClient.Exceptions.NoSuchUserException;
 import electionsClient.Exceptions.NoUsersException;
 import electionsClient.security.LoginData;
 import java.util.HashSet;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,32 +32,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class CandidateClient {
     
-    private static UserClientService service;
-            
-    public static void setService(UserClientService myService){
-        service = myService;
+    @Setter
+    private static CandidateClientService service;
+               
+    public static void newCandidate(Candidate candidate) throws BadResponseException, RequestException, CandidateAlreadyExistsException{
+        service.newCandidate(candidate);
     }
     
-    public static User tryLogIn(LoginData loginData) throws WrongLoginOrPasswordException, RequestException, BadResponseException{
-        return service.tryLogIn(loginData);
+    public static HashSet<Candidate> getCandidates() throws BadResponseException, RequestException{
+       return service.getCandidates();
     }
     
-    public static boolean checkIfAdmin(String login) throws RequestException, NoSuchUserException, BadResponseException{
-        return service.checkIfAdmin(login);
+    public static void deleteAllCandidates() throws BadResponseException, RequestException, InvalidDeleteException{
+        service.deleteAllCandidates();
     }
-    public static User getUserByLogin(String login) throws NoSuchUserException, BadResponseException, RequestException{
-        return service.getUserByLogin(login);
+    
+    public static void voteForCandidate(Candidate candidate) throws BadResponseException, RequestException, InvalidCandidateVoteException, NoSuchCandidateIdException{
+        service.voteForCandidate(candidate);
     }
-    public static boolean tryRegister(LoginData loginData) throws RequestException, BadResponseException, UserAlreadyExistsException{
-        return service.tryRegister(loginData);
-    }
-    public static HashSet<User> getUsers() throws RequestException, BadResponseException, NoUsersException{
-        return service.getUsers();
-    }
-    public static void markAsVoted(String login) throws NoSuchUserException, InvalidVoteException, RequestException, BadResponseException{
-        service.markAsVoted(login);
-    }
-    public static void forgetAllVotes() throws RequestException, BadResponseException, InvalidForgettingVotesException{
-        service.forgetAllVotes();
+    
+    public static void voteForCandidateById(long id) throws BadResponseException, RequestException, InvalidCandidateVoteException, NoSuchCandidateIdException{
+        service.voteForCandidateById(id);
     }
 }

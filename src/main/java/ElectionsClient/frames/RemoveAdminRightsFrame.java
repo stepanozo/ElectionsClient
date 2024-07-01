@@ -1,5 +1,7 @@
 package ElectionsClient.frames;
 
+import ElectionsClient.EntityClient.UserClient;
+import ElectionsClient.application.ApplicationState;
 import java.sql.*;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
@@ -105,7 +107,24 @@ public class RemoveAdminRightsFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
-        
+//        if(Objects.equals(loginField.getText(),ApplicationState.getCurrentUser().getLogin()))
+//            new InfoFrame("Нельзя указывать себя.").setVisible(true);
+//        else{ 
+//            try{//Проверим, что пользователь всё ещё админ
+//                if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+//                    UserClient.setAdminRights(loginField.getText(), false);
+//                    dispose();
+//                }else {
+//                    blockAdminButtons();
+//                    adminFrame.blockAdminButtons();
+//                    adminFrame.notAdminAnymore();
+//                }
+//            } catch(NoSuchUserException | AlreadyAdminException | NotAdminException e){
+//               MainClass.showInfoFrame(e.getMessage());
+//            } catch(SQLException e){
+//               MainClass.showInfoFrame("SQL-ошибка");
+//            }
+//        }
     }//GEN-LAST:event_removeButtonActionPerformed
 
     public void blockAdminButtons(){

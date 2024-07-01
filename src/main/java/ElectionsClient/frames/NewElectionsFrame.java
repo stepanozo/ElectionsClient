@@ -4,7 +4,13 @@
  */
 package ElectionsClient.frames;
 
+import ElectionsClient.EntityClient.CandidateClient;
+import ElectionsClient.EntityClient.ElectionsTimeClient;
+import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.CandidateAlreadyExistsException;
+import ElectionsClient.NewExceptions.InvalidDeleteException;
+import ElectionsClient.NewExceptions.InvalidElectionsStartException;
 import ElectionsClient.NewExceptions.InvalidForgettingVotesException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ApplicationState;
@@ -15,7 +21,7 @@ import ElectionsClient.application.Waiter;
 import ElectionsClient.model.Candidate;
 import ElectionsClient.model.ElectionsTime;
 import electionsClient.Exceptions.HTTPException;
-import ElectionsClient.Service.HttpUtil;
+import ElectionsClient.Service.Http.HttpUtil;
 import ElectionsClient.Service.UserClientService;
 import ElectionsClient.model.User;
 import electionsClient.Exceptions.NoCandidatesException;
@@ -31,33 +37,21 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.http.HttpResponse;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 /**
  *
  * @author чтепоноза
  */
 
-@Component
 public class NewElectionsFrame extends javax.swing.JFrame {
 
-    
-
-    private UserClientService userService;
-    
     private AdminFrame adminFrame;
     
-    @Autowired
-    public void setUserService(UserClientService userService){
-        this.userService = userService;
-    }
-
-    
+   
     public void setAdminFrame(AdminFrame adminFrame){
         this.adminFrame = adminFrame;
     }
@@ -189,29 +183,27 @@ public class NewElectionsFrame extends javax.swing.JFrame {
         File folder = new File(currentDir + "\\Save");
         if (!folder.exists()) {
             folder.mkdir();
-        }
-        String path = folder.getPath();
-        
+        }        
         int i = 1;
         File file = new File(folder + "\\Elections" + i +".txt");
         while(file.exists()){
             file = new File(folder + "\\Elections" + i +".txt");
             i++;
         }
-        try(FileWriter writer = new FileWriter(file.getPath())) {;
+        try(FileWriter writer = new FileWriter(file.getPath())) {
             
-            ElectionsTime electionsTime = HttpUtil.getLatestElectionsTime();
+            ElectionsTime electionsTime = ElectionsTimeClient.getLatestElectionsTime();
         
             writer.write("Начало выборов: " + electionsTime.getDateTimeOfBegining().toString() + "\n");
             writer.append("Конец выборов: " + electionsTime.getDateTimeOfEnding().toString() + "\n");
             writer.append("Результаты выборов: \n");
             
-            HashSet<Candidate> candidates = HttpUtil.getCandidates();
+            HashSet<Candidate> candidates = CandidateClient.getCandidates();
  
             for(Candidate candidate : candidates)
                 writer.append(candidate.getName() + " - " + Elections.percentageOfVotes(candidate, candidates) + "% голосов \n");
             
-            HashSet<User> users = userService.getUsers();
+            HashSet<User> users = UserClient.getUsers();
             
             int sumVotes = users.stream()
                    .mapToInt(user -> (user.isVoted()) ? 1 : 0) 
@@ -235,8 +227,7 @@ public class NewElectionsFrame extends javax.swing.JFrame {
             writer.flush();
         } catch (IOException e) {
             new InfoFrame("Не получилось создать файл").setVisible(true);
-        } catch (HTTPException |
-                RequestException |
+        } catch (RequestException |
                 BadResponseException e){
             new InfoFrame(e.getMessage()).setVisible(true);
         }
@@ -245,27 +236,27 @@ public class NewElectionsFrame extends javax.swing.JFrame {
     
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         try{ //Проверим, что пользователь всё ещё админ
-           if(userService.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+           if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
             
                 LocalDateTime beginTime =  LocalDateTime.parse(timeBeginField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 LocalDateTime endTime = LocalDateTime.parse(timeEndField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 if(endTime.isAfter(beginTime)){
                     
-                    if(HttpUtil.electionsHaveRecords()){ //Здесь мы должны сгрузить в файл информацию о предыдущих выборах, если они были
+                    if(ElectionsTimeClient.electionsHaveRecords()){ //Здесь мы должны сгрузить в файл информацию о предыдущих выборах, если они были
                         savePreviousElections();
                     }
                     
                     ArrayList<Candidate> candidates = FilesUtil.getCandidatesFromFiles(candidateFolderPathField.getText());
                     
-                    HttpResponse response = HttpUtil.newElectionsTime(new ElectionsTime(beginTime, endTime));
+                    ElectionsTimeClient.newElectionsTime(new ElectionsTime(beginTime, endTime));
                     Elections.setTimeOfBegining(beginTime);
                     Elections.setTimeOfEnding(endTime);
                 
-                    userService.forgetAllVotes();
-                    HttpUtil.deleteAllCandidates();
+                    UserClient.forgetAllVotes();
+                    CandidateClient.deleteAllCandidates();
                     
                     for(Candidate candidate: candidates){
-                        HttpUtil.newCandidate(candidate); //Заполняем таблицу кандидатов
+                        CandidateClient.newCandidate(candidate); //Заполняем таблицу кандидатов
                     }
                     
                     //Теперь запустим ожидание конца выборов.
@@ -290,7 +281,9 @@ public class NewElectionsFrame extends javax.swing.JFrame {
         } catch (DateTimeParseException e){
            new InfoFrame("Неверно введена дата.").setVisible(true);
         }
-        catch (HTTPException |
+        catch (InvalidElectionsStartException|
+                InvalidDeleteException |
+                CandidateAlreadyExistsException |
                 NoSuchFolderException | 
                 UnableToReadFileException |
                 TooManyCandidatesException |

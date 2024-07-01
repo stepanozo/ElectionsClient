@@ -16,6 +16,7 @@ import electionsClient.Exceptions.NoSuchUserException;
 import electionsClient.Exceptions.NoUsersException;
 import electionsClient.security.LoginData;
 import java.util.HashSet;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,12 +27,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserClient {
     
+    @Setter
     private static UserClientService service;
             
-    public static void setService(UserClientService myService){
-        service = myService;
-    }
-    
     public static User tryLogIn(LoginData loginData) throws WrongLoginOrPasswordException, RequestException, BadResponseException{
         return service.tryLogIn(loginData);
     }

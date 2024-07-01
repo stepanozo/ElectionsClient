@@ -10,7 +10,6 @@ import ElectionsClient.NewExceptions.InvalidForgettingVotesException;
 import ElectionsClient.NewExceptions.InvalidVoteException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.UserAlreadyExistsException;
-import ElectionsClient.Service.HttpUtil;
 import ElectionsClient.Service.UserClientService;
 import ElectionsClient.frames.InfoFrame;
 import ElectionsClient.model.User;
@@ -218,7 +217,7 @@ public class UserHttpService implements UserClientService{
         String serverUrl = HttpUtil.getServerUrl();
         HttpClient client = HttpUtil.getClient();
         
-        String requestUrl = serverUrl + "/users";
+        String requestUrl = serverUrl + "/users/" + login + ":mark-as-voted";
         
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(requestUrl))
@@ -273,4 +272,5 @@ public class UserHttpService implements UserClientService{
         }
         
     }
+    
 }

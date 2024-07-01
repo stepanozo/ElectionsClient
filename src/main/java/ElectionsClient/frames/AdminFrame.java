@@ -4,9 +4,12 @@
  */
 package ElectionsClient.frames;
 
+import ElectionsClient.EntityClient.ElectionsTimeClient;
+import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.Elections;
 import electionsClient.Exceptions.HTTPException;
-import ElectionsClient.Service.HttpUtil;
+import ElectionsClient.Service.Http.HttpUtil;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 /**
@@ -172,7 +175,7 @@ public class AdminFrame extends javax.swing.JFrame {
 
     private void voteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voteButtonActionPerformed
         try{
-            if(HttpUtil.electionsHaveRecords() &&
+            if(ElectionsTimeClient.electionsHaveRecords() &&
                 LocalDateTime.now().isAfter(Elections.getDateTimeOfBegining()) )
             {
                 if(LocalDateTime.now().isBefore(Elections.getDateTimeOfEnding())){
@@ -187,8 +190,8 @@ public class AdminFrame extends javax.swing.JFrame {
             else{
                 new InfoFrame("Выборы в данный момент не проводятся").setVisible(true);
             }
-        } catch(HTTPException e){
-                new InfoFrame("SQL-ошибка").setVisible(true);
+        } catch(RequestException | BadResponseException e){
+                new InfoFrame(e.getMessage()).setVisible(true);
         }
         
     }//GEN-LAST:event_voteButtonActionPerformed

@@ -1,8 +1,14 @@
 package electionsClient.application;
 
 import ElectionsClient.Configuration.SpringConfig;
+import ElectionsClient.EntityClient.CandidateClient;
+import ElectionsClient.EntityClient.ElectionsTimeClient;
 import ElectionsClient.EntityClient.UserClient;
+import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.Service.CandidateClientService;
+import ElectionsClient.Service.Http.CandidateHttpService;
+import ElectionsClient.Service.Http.ElectionsTimeHttpService;
 import ElectionsClient.Service.Http.UserHttpService;
 import ElectionsClient.application.Elections;
 import ElectionsClient.application.Waiter;
@@ -12,7 +18,7 @@ import ElectionsClient.model.ElectionsTime;
 import electionsClient.Exceptions.HTTPException;
 import electionsClient.Exceptions.NoCandidatesException;
 import electionsClient.Exceptions.NoElectionsException;
-import ElectionsClient.Service.HttpUtil;
+import ElectionsClient.Service.Http.HttpUtil;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import javax.swing.SwingUtilities;
@@ -46,7 +52,10 @@ public class Application implements CommandLineRunner {
                 SpringConfig.class
         );
         
+        //Зависимости
         UserClient.setService(context.getBean("userClientService", UserHttpService.class));
+        CandidateClient.setService(context.getBean("candidateClientService", CandidateHttpService.class));
+        ElectionsTimeClient.setService(context.getBean("electionsTimeClientService", ElectionsTimeHttpService.class));
         
         SwingUtilities.invokeLater(() -> {
             LogInFrame frame = new LogInFrame();
@@ -54,9 +63,9 @@ public class Application implements CommandLineRunner {
             
             //Хорошо бы счётчик выборов вынести чисто в окно для голосования, но это мб позже.
             try{
-                if(HttpUtil.electionsHaveRecords()){
+                if(ElectionsTimeClient.electionsHaveRecords()){
                     
-                    ElectionsTime electionsTime = HttpUtil.getLatestElectionsTime();
+                    ElectionsTime electionsTime = ElectionsTimeClient.getLatestElectionsTime();
                     Elections.setTimeOfBegining(electionsTime.getDateTimeOfBegining());
                     Elections.setTimeOfEnding(electionsTime.getDateTimeOfEnding());
                     //Elections.setCandidates(HTTPUtil.getCandidates());
@@ -69,7 +78,9 @@ public class Application implements CommandLineRunner {
 
                 }
                 //new LogInFrame().setVisible(true);
-            } catch( HTTPException | NoElectionsException e){
+            } catch(NoElectionsException e){ //ВОТ С ЭТИМ ЧТО-ТО СДЕЛАТЬ. ТАК ЖЕ ВРОДЕ НЕ ДОЛЖНО БЫТЬ?
+                //При запуске приложения совсем не обязательно, чтобы обязательно были выборы. Можно это исключение не обрабатывать.
+            } catch(RequestException | BadResponseException e){
                 new InfoFrame(e.getMessage()).setVisible(true);
             }
         });

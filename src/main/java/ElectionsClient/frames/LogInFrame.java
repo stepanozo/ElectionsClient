@@ -6,21 +6,15 @@
 package ElectionsClient.frames;
 
 
+import ElectionsClient.EntityClient.ElectionsTimeClient;
 import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ApplicationState;
 import ElectionsClient.application.Elections;
-import electionsClient.Exceptions.HTTPException;
-import ElectionsClient.Service.HttpUtil;
-import ElectionsClient.Service.UserClientService;
 import electionsClient.security.LoginData;
-import java.sql.*;
 import java.time.LocalDateTime;
-import ElectionsClient.frames.RegistrationFrame;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 /**
  *
  * @author student
@@ -165,7 +159,7 @@ public class LogInFrame extends javax.swing.JFrame {
                     }
                         else
                     {
-                         if(HttpUtil.electionsHaveRecords() &&
+                         if(ElectionsTimeClient.electionsHaveRecords() &&
                                     LocalDateTime.now().isAfter(Elections.getDateTimeOfBegining()) )
                             {
                                 if(LocalDateTime.now().isBefore(Elections.getDateTimeOfEnding())){
@@ -185,7 +179,7 @@ public class LogInFrame extends javax.swing.JFrame {
                 }   else wrongPasswordLabel.setText("Некорректно введён пароль");
             } else wrongPasswordLabel.setText("Некорректно введён логин");
            
-        } catch (RequestException | BadResponseException | WrongLoginOrPasswordException | HTTPException e){
+        } catch (RequestException | BadResponseException | WrongLoginOrPasswordException e){
             new InfoFrame(e.getMessage()).setVisible(true);
         }
                

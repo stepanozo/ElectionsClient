@@ -5,6 +5,7 @@
 package ElectionsClient.frames;
 
 
+import ElectionsClient.EntityClient.CandidateClient;
 import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
@@ -13,7 +14,7 @@ import ElectionsClient.application.Elections;
 import ElectionsClient.application.MainClass;
 import ElectionsClient.model.Candidate;
 import electionsClient.Exceptions.HTTPException;
-import ElectionsClient.Service.HttpUtil;
+import ElectionsClient.Service.Http.HttpUtil;
 import ElectionsClient.Service.UserClientService;
 import electionsClient.Exceptions.NoSuchUserException;
 import java.sql.SQLException;
@@ -54,7 +55,7 @@ public class ElectionsResultFrame extends javax.swing.JFrame {
         };
         
         try{
-            HashSet<Candidate> candidates = HttpUtil.getCandidates();
+            HashSet<Candidate> candidates = CandidateClient.getCandidates();
 
             int numberOfCandidates = candidates.size();
 
@@ -69,8 +70,8 @@ public class ElectionsResultFrame extends javax.swing.JFrame {
                 );
                 i++;
             }
-        } catch (HTTPException e){
-            new InfoFrame("Ошибка запроса").setVisible(true);
+        } catch (BadResponseException | RequestException e){
+            new InfoFrame(e.getMessage()).setVisible(true);
         }
     }
 

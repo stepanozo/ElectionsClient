@@ -5,10 +5,13 @@
 package ElectionsClient.frames;
 
 
+import ElectionsClient.EntityClient.CandidateClient;
+import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.Elections;
 import ElectionsClient.model.Candidate;
 import electionsClient.Exceptions.HTTPException;
-import ElectionsClient.Service.HttpUtil;
+import ElectionsClient.Service.Http.HttpUtil;
 import java.util.stream.Collectors;
 import java.util.*;
 import java.util.function.Predicate;
@@ -174,14 +177,14 @@ public class FilterFrame extends javax.swing.JFrame {
                 pred = pred.and(candidate -> Objects.equals(candidate.getPlaceOfLiving(), cityTextField.getText()));
 
 
-            voteFrame.showCandidates(HttpUtil.getCandidates().stream().filter(pred)
+            voteFrame.showCandidates(CandidateClient.getCandidates().stream().filter(pred)
                     .collect(Collectors.toCollection(HashSet::new)) //Здесь преобразуем в HashSet, который принимается методом showCandidates
                     );
             dispose();
         } catch(NumberFormatException e){
             new InfoFrame("Неверно введен возраст кандидата.").setVisible(true);
-        } catch(HTTPException e){
-            new InfoFrame("Не удалось получить список кандидатов").setVisible(true);
+        } catch(RequestException | BadResponseException e){
+            new InfoFrame(e.getMessage()).setVisible(true);
         }
     }//GEN-LAST:event_applyButtonActionPerformed
 

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import ElectionsClient.frames.LogInFrame;
 import electionsClient.Exceptions.HTTPException;
-import ElectionsClient.Service.HttpUtil;
+import ElectionsClient.Service.Http.HttpUtil;
 import ElectionsClient.Service.UserClientService;
 import electionsClient.security.LoginData;
 import java.net.http.HttpResponse;

@@ -4,6 +4,11 @@
  */
 package ElectionsClient.Service;
 
+import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.InvalidElectionsStartException;
+import ElectionsClient.NewExceptions.RequestException;
+import ElectionsClient.model.ElectionsTime;
+import electionsClient.Exceptions.NoElectionsException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,5 +18,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface ElectionsTimeClientService {
+
+    public boolean electionsHaveRecords() throws RequestException, BadResponseException;
     
+    public ElectionsTime getLatestElectionsTime() throws RequestException, BadResponseException, NoElectionsException;
+    
+    public void newElectionsTime(ElectionsTime electionsTime) throws RequestException, BadResponseException, InvalidElectionsStartException;
 }
