@@ -8,7 +8,7 @@ package ElectionsClient.frames;
 import ElectionsClient.application.Elections;
 import ElectionsClient.model.Candidate;
 import electionsClient.Exceptions.HTTPException;
-import electionsClient.HTTP.HTTPUtil;
+import ElectionsClient.Service.HttpUtil;
 import java.util.stream.Collectors;
 import java.util.*;
 import java.util.function.Predicate;
@@ -174,8 +174,7 @@ public class FilterFrame extends javax.swing.JFrame {
                 pred = pred.and(candidate -> Objects.equals(candidate.getPlaceOfLiving(), cityTextField.getText()));
 
 
-            voteFrame.showCandidates(
-                    HTTPUtil.getCandidates().stream().filter(pred)
+            voteFrame.showCandidates(HttpUtil.getCandidates().stream().filter(pred)
                     .collect(Collectors.toCollection(HashSet::new)) //Здесь преобразуем в HashSet, который принимается методом showCandidates
                     );
             dispose();

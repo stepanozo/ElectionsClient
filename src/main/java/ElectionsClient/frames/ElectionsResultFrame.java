@@ -5,27 +5,40 @@
 package ElectionsClient.frames;
 
 
+import ElectionsClient.EntityClient.UserClient;
+import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ApplicationState;
 import ElectionsClient.application.Elections;
 import ElectionsClient.application.MainClass;
 import ElectionsClient.model.Candidate;
 import electionsClient.Exceptions.HTTPException;
-import electionsClient.HTTP.HTTPUtil;
+import ElectionsClient.Service.HttpUtil;
+import ElectionsClient.Service.UserClientService;
+import electionsClient.Exceptions.NoSuchUserException;
 import java.sql.SQLException;
 import java.util.HashSet;
 import javax.swing.JLabel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author чтепоноза
  */
+
 public class ElectionsResultFrame extends javax.swing.JFrame {
+    
     private final int MAX_CANDIDATES = 8;
     private JLabel[] labelArray;
     
     /**
      * Creates new form ElectionsResultFrame
      */
+    
+    @Autowired
+    
+    
     public ElectionsResultFrame() {
         setLocationRelativeTo(null);
         initComponents();
@@ -41,7 +54,7 @@ public class ElectionsResultFrame extends javax.swing.JFrame {
         };
         
         try{
-            HashSet<Candidate> candidates = HTTPUtil.getCandidates();
+            HashSet<Candidate> candidates = HttpUtil.getCandidates();
 
             int numberOfCandidates = candidates.size();
 
@@ -169,16 +182,16 @@ public class ElectionsResultFrame extends javax.swing.JFrame {
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
 
         try{
-            if(HTTPUtil.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+            if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
                 new AdminFrame().setVisible(true);
             } else{
                 LogInFrame logInFrame = new LogInFrame();
                 logInFrame.setVisible(true);
             }
-        } catch (HTTPException e){
+        } catch (RequestException | NoSuchUserException | BadResponseException e){
             LogInFrame logInFrame = new LogInFrame();
             logInFrame.setVisible(true);
-            logInFrame.showConnectionErrorMessage();
+            new InfoFrame(e.getMessage()).setVisible(true);
         } finally {
             dispose();
         }

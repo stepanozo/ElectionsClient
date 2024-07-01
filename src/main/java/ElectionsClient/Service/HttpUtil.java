@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package electionsClient.HTTP;
+package ElectionsClient.Service;
 
 import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
 import ElectionsClient.application.MyJsonConverter;
@@ -32,95 +32,23 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 /**
  *
  * @author чтепоноза
  */
-public class HTTPUtil {
+public class HttpUtil {
+      
+    
+    @Getter
     static HttpClient client = HttpClient.newHttpClient();
     
+    @Getter
     static String serverUrl = "http://localhost:8080";
-    
-    public static User tryLogIn(LoginData loginData) throws HTTPException, WrongLoginOrPasswordException{
-        
-        String requestUrl = serverUrl + "/users/login";
-        // Создаем JSON тело запроса
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-        
-        String json = gson.toJson(loginData);
-        
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(requestUrl)).
-                header("Content-Type", "application/json").
-                POST(BodyPublishers.ofString(json)).
-                build();
-        
-        try{
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-           
-            HttpStatus statusCode = HttpStatus.resolve(response.statusCode());
-            
-            switch (statusCode) {
-                case HttpStatus.OK:
-                    return gson.fromJson(response.body(), User.class);
-                case HttpStatus.UNAUTHORIZED:
-                    throw new WrongLoginOrPasswordException("Неверный логин или пароль");
-                default:
-                    throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
-            }
-        } catch(IOException | InterruptedException e){
-            throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
-        }
-                
-    }
-    
-    
-    public static boolean checkIfAdmin(String login) throws HTTPException {
-        
-        String requestUrl = serverUrl + "/users/" + login +":check-if-admin";
-        // Создаем JSON тело запроса
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-       
-        
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(requestUrl)).
-                build();
-        
-        try{
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            boolean adminExists = gson.fromJson(response.body(), boolean.class);
-            return adminExists;
-        } catch(IOException | InterruptedException e){
-            throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
-        }
-                
-    }
-    
-    public static User getUserByLogin(String login) throws HTTPException {
-        
-        String requestUrl = serverUrl + "/users/" + login;
-        // Создаем JSON тело запроса
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-       
-        
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(requestUrl)).
-                build();
-        
-        try{
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            User user = gson.fromJson(response.body(), User.class);
-            return user;
-        } catch(IOException | InterruptedException e){
-            throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
-        }
-                
-    }
     
     public static boolean electionsHaveRecords() throws HTTPException {
         
@@ -153,11 +81,6 @@ public class HTTPUtil {
         try{
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-//            GsonBuilder builder = new GsonBuilder();
-//            Gson gson = builder.create();
-//            ElectionsTime electionsTime = gson.fromJson(response.body(), ElectionsTime.class);
-
-
             //Тут что-то адское происходит
             String json = response.body();
             GsonBuilder builder = new GsonBuilder();
@@ -175,30 +98,6 @@ public class HTTPUtil {
         }
                 
     }
-    
-    public static HttpResponse<String> tryRegister(LoginData loginData) throws HTTPException{
-        
-        String requestUrl = serverUrl + "/users/register";
-        // Создаем JSON тело запроса
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-        
-        String json = gson.toJson(loginData);
-        
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(requestUrl)).
-                header("Content-Type", "application/json").
-                POST(BodyPublishers.ofString(json)).
-                build();
-        
-        try{
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response;
-        } catch(IOException | InterruptedException e){
-            throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
-        }
-    }
-    
     
     public static HttpResponse<String> newElectionsTime(ElectionsTime electionsTime) throws HTTPException{
         
@@ -225,7 +124,7 @@ public class HTTPUtil {
         }
     }
     
-        public static HttpResponse<String> newCandidate(Candidate candidate) throws HTTPException{
+    public static HttpResponse<String> newCandidate(Candidate candidate) throws HTTPException{
         
         String requestUrl = serverUrl + "/candidates";
         // Создаем JSON тело запроса
@@ -275,32 +174,6 @@ public class HTTPUtil {
                 
     }
     
-    public static HashSet<User> getUsers() throws HTTPException, NoUsersException{
-        
-        String requestUrl = serverUrl + "/users";
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(requestUrl)).
-                build();
-        
-        try{
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-           
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-//            UserHashSet userHashSet = gson.fromJson(response.body(), UserHashSet.class);
-//            if(userHashSet.getHashSet().isEmpty())
-//                throw new NoUsersException("Не найдено ни одного пользователя");
-//            return userHashSet.getHashSet();
-
-            Type collectionType = new TypeToken<HashSet<User>>(){}.getType(); //Здесь происходит сатана
-            HashSet<User> userSet = gson.fromJson(response.body(), collectionType);
-            return userSet;
-        } catch(IOException | InterruptedException e){
-            throw new HTTPException("Ошибка запроса по адресу " + requestUrl, requestUrl);
-        }
-                
-    }
     
     //Тут бы сделать разные статусы и желательно возврат исключения
     public static void deleteAllCandidates() throws HTTPException{
@@ -319,38 +192,7 @@ public class HTTPUtil {
         
     }
     
-    //Тут бы сделать разные статусы и желательно возврат исключения
-    public static void forgetAllVotes() throws HTTPException{
-        String requestUrl = serverUrl + "/users/forgetVotes";
-        
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(requestUrl))
-            .method("PATCH", HttpRequest.BodyPublishers.noBody()) 
-            .build();
-        
-        try{
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e){
-            throw new HTTPException("Ошибка удаления кандидатов по адресу " + requestUrl, requestUrl);
-        }
-        
-    }
-    
-    //Тут бы сделать разные статусы и желательно возврат исключения
-    public static void markAsVoted(String login) throws HTTPException{
-        String requestUrl = serverUrl + "/users/" + login + ":mark-as-voted";
-        
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(requestUrl))
-            .method("PATCH", HttpRequest.BodyPublishers.noBody())
-            .build();
-        try{
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e){
-            throw new HTTPException("Ошибка удаления кандидатов по адресу " + requestUrl, requestUrl);
-        }
-        
-    }
+
     
     //Возможно добавить кандидату ID, и тогда не придётся возиться с кодировкой имени. Просто голосовать по ID, а не по имени
     public static void voteForCandidate(Candidate candidate) throws HTTPException, UnsupportedEncodingException{

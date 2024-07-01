@@ -5,23 +5,32 @@
  */
 package ElectionsClient.frames;
 
+import ElectionsClient.EntityClient.UserClient;
+import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.RequestException;
+import ElectionsClient.NewExceptions.UserAlreadyExistsException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import ElectionsClient.frames.LogInFrame;
 import electionsClient.Exceptions.HTTPException;
-import electionsClient.HTTP.HTTPUtil;
+import ElectionsClient.Service.HttpUtil;
+import ElectionsClient.Service.UserClientService;
 import electionsClient.security.LoginData;
 import java.net.http.HttpResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author student
  */
+
 public class RegistrationFrame extends javax.swing.JFrame {
 
-    
+   
     private LogInFrame loginFrame;
+    
     
     public void setLoginFrame(LogInFrame loginFrame){
         this.loginFrame = loginFrame;
@@ -146,28 +155,15 @@ public class RegistrationFrame extends javax.swing.JFrame {
             if(isLoginCorrect(loginData.getLogin())){
                 
                 if(isPasswordCorrect(loginData.getPassword())){
-                    HttpResponse<String> response = HTTPUtil.tryRegister(loginData);
                     
-                    switch(HttpStatus.resolve(response.statusCode())){
-                        case HttpStatus.CREATED:
-                            new InfoFrame("Регистрация прошла успешно!").setVisible(true);
-                            dispose();
-                            break;
-                        case HttpStatus.CONFLICT:
-                            cantRegisterLabel.setText("Такой пользователь уже существует.");
-                            break;
-                        case HttpStatus.INTERNAL_SERVER_ERROR:
-                            cantRegisterLabel.setText("Внутренняя ошибка сервера");
-                            break;
-                        default:
-                            cantRegisterLabel.setText("Статус: " + response.statusCode());
-                            break;
-                    }
-                    
-                }   else cantRegisterLabel.setText("Некорректно введён пароль");
+                    if(UserClient.tryRegister(loginData))          
+                         new InfoFrame("Пользователь успешно зарегистрирован!").setVisible(true);
+                }   else cantRegisterLabel.setText("Некорректно введён пароль");   
             } else cantRegisterLabel.setText("Некорректно введён логин");
            
-        } catch (HTTPException e){
+        } catch (RequestException |
+                BadResponseException |
+                UserAlreadyExistsException e){
             new InfoFrame(e.getMessage()).setVisible(true);
         }            
     }//GEN-LAST:event_confirmButtonActionPerformed

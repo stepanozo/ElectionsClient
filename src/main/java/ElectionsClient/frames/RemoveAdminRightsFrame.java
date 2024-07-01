@@ -2,6 +2,7 @@ package ElectionsClient.frames;
 
 import java.sql.*;
 import java.util.Objects;
+import org.springframework.stereotype.Component;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -12,6 +13,8 @@ import java.util.Objects;
  *
  * @author чтепоноза
  */
+
+@Component
 public class RemoveAdminRightsFrame extends javax.swing.JFrame {
 
     

@@ -1,5 +1,9 @@
 package electionsClient.application;
 
+import ElectionsClient.Configuration.SpringConfig;
+import ElectionsClient.EntityClient.UserClient;
+import ElectionsClient.Service.CandidateClientService;
+import ElectionsClient.Service.Http.UserHttpService;
 import ElectionsClient.application.Elections;
 import ElectionsClient.application.Waiter;
 import ElectionsClient.frames.InfoFrame;
@@ -8,7 +12,7 @@ import ElectionsClient.model.ElectionsTime;
 import electionsClient.Exceptions.HTTPException;
 import electionsClient.Exceptions.NoCandidatesException;
 import electionsClient.Exceptions.NoElectionsException;
-import electionsClient.HTTP.HTTPUtil;
+import ElectionsClient.Service.HttpUtil;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import javax.swing.SwingUtilities;
@@ -21,8 +25,9 @@ import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfig
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-@SpringBootApplication(scanBasePackages = "elections")
+@SpringBootApplication(scanBasePackages = "ElectionsClient")
 public class Application implements CommandLineRunner {
 
     Thread waiterThread;
@@ -37,15 +42,21 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+                SpringConfig.class
+        );
+        
+        UserClient.setService(context.getBean("userClientService", UserHttpService.class));
+        
         SwingUtilities.invokeLater(() -> {
             LogInFrame frame = new LogInFrame();
             frame.setVisible(true);
             
             //Хорошо бы счётчик выборов вынести чисто в окно для голосования, но это мб позже.
             try{
-                if(HTTPUtil.electionsHaveRecords()){
+                if(HttpUtil.electionsHaveRecords()){
                     
-                    ElectionsTime electionsTime = HTTPUtil.getLatestElectionsTime();
+                    ElectionsTime electionsTime = HttpUtil.getLatestElectionsTime();
                     Elections.setTimeOfBegining(electionsTime.getDateTimeOfBegining());
                     Elections.setTimeOfEnding(electionsTime.getDateTimeOfEnding());
                     //Elections.setCandidates(HTTPUtil.getCandidates());

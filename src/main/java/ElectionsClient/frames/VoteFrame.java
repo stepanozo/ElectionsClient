@@ -4,6 +4,10 @@
  */
 package ElectionsClient.frames;
 
+import ElectionsClient.EntityClient.UserClient;
+import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.InvalidVoteException;
+import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ApplicationState;
 import ElectionsClient.application.Elections;
 import ElectionsClient.model.Candidate;
@@ -11,20 +15,26 @@ import ElectionsClient.model.User;
 import electionsClient.Exceptions.HTTPException;
 import electionsClient.Exceptions.NoSuchCandidateException;
 import electionsClient.Exceptions.NoSuchUserException;
-import electionsClient.HTTP.HTTPUtil;
+import ElectionsClient.Service.HttpUtil;
+import ElectionsClient.Service.UserClientService;
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.sql.*;
 import javax.swing.JCheckBox;
 import javax.swing.JButton;
 import java.util.HashMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author чтепоноза
  */
+
+
 public class VoteFrame extends javax.swing.JFrame {
 
+    
     private final int MAX_CANDIDATES = 8;
     private JCheckBox[] checkBoxArray;
     private JButton[] candidateButtonsArray;
@@ -326,16 +336,19 @@ public class VoteFrame extends javax.swing.JFrame {
         Elections.setVoteFrame(this);
         try{
             
-            HashSet<Candidate> candidates = HTTPUtil.getCandidates();
+            HashSet<Candidate> candidates = HttpUtil.getCandidates();
             numberOfCandidates = candidates.size();
             choice = -1;
 
             showCandidates(candidates);
-            User user = HTTPUtil.getUserByLogin((ApplicationState.getCurrentUser().getLogin()));
+            User user = UserClient.getUserByLogin((ApplicationState.getCurrentUser().getLogin()));
             if(user.isVoted())
                 voteButton.setEnabled(false);
-        } catch (HTTPException e){
-            new InfoFrame("Ошибка HTTP-запроса").setVisible(true);
+        } catch (NoSuchUserException |
+                BadResponseException |
+                RequestException |
+                HTTPException e){
+            new InfoFrame(e.getMessage()).setVisible(true);
         }
     }
     
@@ -368,16 +381,18 @@ public class VoteFrame extends javax.swing.JFrame {
     
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         try{
-            if(HTTPUtil.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+            if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
                 new AdminFrame().setVisible(true);
             } else{
                 LogInFrame logInFrame = new LogInFrame();
                 logInFrame.setVisible(true);
             }
-        } catch (HTTPException e){
+        } catch (RequestException |
+                BadResponseException |
+                NoSuchUserException e){
             LogInFrame logInFrame = new LogInFrame();
             logInFrame.setVisible(true);
-            logInFrame.showConnectionErrorMessage();
+            new InfoFrame(e.getMessage()).setVisible(true);
         } finally {
             dispose();
         }
@@ -431,18 +446,22 @@ public class VoteFrame extends javax.swing.JFrame {
         } else {
             try{
 
-                User user = HTTPUtil.getUserByLogin(ApplicationState.getCurrentUser().getLogin());
+                User user = UserClient.getUserByLogin(ApplicationState.getCurrentUser().getLogin());
                 if(!user.isVoted()){
-                    HTTPUtil.voteForCandidate(numberAndCandidate.get(choice));
-                    HTTPUtil.markAsVoted(user.getLogin());
+                    HttpUtil.voteForCandidate(numberAndCandidate.get(choice));
+                    UserClient.markAsVoted(user.getLogin());
                     voteButton.setEnabled(false);
                     new InfoFrame("Ваш голос успешно зарегистрирован").setVisible(true);
                 } else {
                     new InfoFrame("Вы уже голосовали").setVisible(true);
                     voteButton.setEnabled(false);
                 }
-            } catch (HTTPException e){
-                new InfoFrame("Ошибка соединения с сервером").setVisible(true);
+            } catch (HTTPException |
+                    NoSuchUserException |
+                    InvalidVoteException |
+                    BadResponseException |
+                    RequestException e){
+                new InfoFrame(e.getMessage()).setVisible(true);
             } catch (UnsupportedEncodingException e) {
                 new InfoFrame("Ошибка кодировки имени кандидата").setVisible(true);
             }
@@ -492,7 +511,7 @@ public class VoteFrame extends javax.swing.JFrame {
 
     private void cancelFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelFilterActionPerformed
         try{
-            showCandidates(HTTPUtil.getCandidates());
+            showCandidates(HttpUtil.getCandidates());
         } catch (HTTPException e){
             new InfoFrame("Ошибка соединения").setVisible(true);
         }

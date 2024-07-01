@@ -6,7 +6,7 @@ package ElectionsClient.frames;
 
 import ElectionsClient.application.Elections;
 import electionsClient.Exceptions.HTTPException;
-import electionsClient.HTTP.HTTPUtil;
+import ElectionsClient.Service.HttpUtil;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 /**
@@ -156,7 +156,8 @@ public class AdminFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_newElectionsButtonActionPerformed
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
-
+        new LogInFrame().setVisible(true);
+        dispose();
     }//GEN-LAST:event_exitButtonActionPerformed
 
     private void addAdminRightsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAdminRightsButtonActionPerformed
@@ -171,7 +172,7 @@ public class AdminFrame extends javax.swing.JFrame {
 
     private void voteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voteButtonActionPerformed
         try{
-            if(HTTPUtil.electionsHaveRecords() &&
+            if(HttpUtil.electionsHaveRecords() &&
                 LocalDateTime.now().isAfter(Elections.getDateTimeOfBegining()) )
             {
                 if(LocalDateTime.now().isBefore(Elections.getDateTimeOfEnding())){

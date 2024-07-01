@@ -6,30 +6,32 @@
 package ElectionsClient.frames;
 
 
+import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
+import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ApplicationState;
 import ElectionsClient.application.Elections;
 import electionsClient.Exceptions.HTTPException;
-import electionsClient.HTTP.HTTPUtil;
+import ElectionsClient.Service.HttpUtil;
+import ElectionsClient.Service.UserClientService;
 import electionsClient.security.LoginData;
 import java.sql.*;
 import java.time.LocalDateTime;
 import ElectionsClient.frames.RegistrationFrame;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 /**
  *
  * @author student
  */
+
 public class LogInFrame extends javax.swing.JFrame {
 
-    
-    private boolean mustCloseConnection;
-    
-    
     /**
      * Creates new form logInFrame
      */
     public LogInFrame() {
-        mustCloseConnection = true;
         setLocationRelativeTo(null);
         initComponents();
         connectionErrorLabel.setVisible(false);
@@ -154,7 +156,7 @@ public class LogInFrame extends javax.swing.JFrame {
             if(isLoginCorrect(loginData.getLogin())){
                 
                 if(isPasswordCorrect(loginData.getPassword())){
-                    ApplicationState.setCurrentUser(HTTPUtil.tryLogIn(loginData));
+                    ApplicationState.setCurrentUser(UserClient.tryLogIn(loginData));
                     
                     if(ApplicationState.getCurrentUser().isAdmin()){
                             AdminFrame adminFrame = new AdminFrame();
@@ -163,7 +165,7 @@ public class LogInFrame extends javax.swing.JFrame {
                     }
                         else
                     {
-                         if(HTTPUtil.electionsHaveRecords() &&
+                         if(HttpUtil.electionsHaveRecords() &&
                                     LocalDateTime.now().isAfter(Elections.getDateTimeOfBegining()) )
                             {
                                 if(LocalDateTime.now().isBefore(Elections.getDateTimeOfEnding())){
@@ -173,7 +175,6 @@ public class LogInFrame extends javax.swing.JFrame {
                                     ElectionsResultFrame resultFrame = new ElectionsResultFrame();
                                     resultFrame.setVisible(true);
                                 }
-                                mustCloseConnection = false;
                                 dispose();
                             }
                             else{
@@ -184,7 +185,7 @@ public class LogInFrame extends javax.swing.JFrame {
                 }   else wrongPasswordLabel.setText("Некорректно введён пароль");
             } else wrongPasswordLabel.setText("Некорректно введён логин");
            
-        } catch (HTTPException | WrongLoginOrPasswordException e){
+        } catch (RequestException | BadResponseException | WrongLoginOrPasswordException | HTTPException e){
             new InfoFrame(e.getMessage()).setVisible(true);
         }
                
