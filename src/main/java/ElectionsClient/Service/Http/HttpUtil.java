@@ -6,6 +6,7 @@ package ElectionsClient.Service.Http;
 
 import java.net.http.HttpClient;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -17,5 +18,6 @@ public class HttpUtil {
     static HttpClient client = HttpClient.newHttpClient();
     
     @Getter
+    @Setter
     static String serverUrl = "http://localhost:8080"; 
 }

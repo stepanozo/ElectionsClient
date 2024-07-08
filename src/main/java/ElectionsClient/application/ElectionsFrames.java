@@ -16,7 +16,7 @@ import java.util.HashSet;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Elections {
+public class ElectionsFrames {
     
     @Getter
     @Setter
@@ -40,7 +40,7 @@ public class Elections {
                 
     }
     
-    private Elections(){
+    private ElectionsFrames(){
         //Конструктор-заглушка
     }
       

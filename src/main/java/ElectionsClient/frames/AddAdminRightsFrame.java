@@ -4,8 +4,8 @@ import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.InvalidAdminRightsException;
 import ElectionsClient.NewExceptions.RequestException;
-import ElectionsClient.application.ApplicationState;
 import ElectionsClient.NewExceptions.NoSuchUserException;
+import electionsClient.application.Application;
 import java.util.Objects;
 
 /*
@@ -115,11 +115,11 @@ public class AddAdminRightsFrame extends javax.swing.JFrame {
     }
     
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        if(Objects.equals(loginField.getText(),ApplicationState.getCurrentUser().getLogin()))
+        if(Objects.equals(loginField.getText(),Application.getCurrentUser().getLogin()))
             new InfoFrame("Нельзя указывать себя.").setVisible(true);
         else{ 
             try{//Проверим, что пользователь всё ещё админ
-                if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+                if(UserClient.checkIfAdmin(Application.getCurrentUser().getLogin())){
                     UserClient.markAsAdmin(loginField.getText(), true);
                     new InfoFrame("Пользователь успешно назначен админом").setVisible(true);
                 }else {

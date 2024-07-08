@@ -8,9 +8,9 @@ import ElectionsClient.EntityClient.ElectionsTimeClient;
 import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
-import ElectionsClient.application.ApplicationState;
 import ElectionsClient.NewExceptions.NoElectionsException;
 import ElectionsClient.NewExceptions.NoSuchUserException;
+import electionsClient.application.Application;
 import java.time.LocalDateTime;
 /**
  *
@@ -166,7 +166,7 @@ public class AdminFrame extends javax.swing.JFrame {
 
     private void addAdminRightsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAdminRightsButtonActionPerformed
         try{ //Проверим, что пользователь всё ещё админ
-            if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+            if(UserClient.checkIfAdmin(Application.getCurrentUser().getLogin())){
                 AddAdminRightsFrame addAdminRightsFrame = new AddAdminRightsFrame();
                 addAdminRightsFrame.setVisible(true);
                 addAdminRightsFrame.setAdminFrame(this);
@@ -184,7 +184,7 @@ public class AdminFrame extends javax.swing.JFrame {
     private void removeAdminRightsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAdminRightsButtonActionPerformed
 
         try{ //Проверим, что пользователь всё ещё админ
-            if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+            if(UserClient.checkIfAdmin(Application.getCurrentUser().getLogin())){
                 RemoveAdminRightsFrame removeAdminRightsFrame = new RemoveAdminRightsFrame();
                 removeAdminRightsFrame.setVisible(true);
                 removeAdminRightsFrame.setAdminFrame(this);

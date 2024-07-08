@@ -9,10 +9,10 @@ import ElectionsClient.EntityClient.CandidateClient;
 import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
-import ElectionsClient.application.ApplicationState;
-import ElectionsClient.application.Elections;
+import ElectionsClient.application.ElectionsFrames;
 import ElectionsClient.model.Candidate;
 import ElectionsClient.NewExceptions.NoSuchUserException;
+import electionsClient.application.Application;
 import java.util.HashSet;
 import javax.swing.JLabel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +59,7 @@ public class ElectionsResultFrame extends javax.swing.JFrame {
 
             int i =0;
             for(Candidate candidate: candidates){
-                labelArray[i].setText(
-                        candidate.getName() + " - " + Elections.percentageOfVotes(candidate, candidates) + " % голосов"
+                labelArray[i].setText(candidate.getName() + " - " + ElectionsFrames.percentageOfVotes(candidate, candidates) + " % голосов"
                 );
                 i++;
             }
@@ -177,7 +176,7 @@ public class ElectionsResultFrame extends javax.swing.JFrame {
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
 
         try{
-            if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+            if(UserClient.checkIfAdmin(Application.getCurrentUser().getLogin())){
                 new AdminFrame().setVisible(true);
             } else{
                 LogInFrame logInFrame = new LogInFrame();

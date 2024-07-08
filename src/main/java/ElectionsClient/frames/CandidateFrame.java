@@ -4,7 +4,7 @@
  */
 package ElectionsClient.frames;
 
-import ElectionsClient.application.Elections;
+import ElectionsClient.application.ElectionsFrames;
 import ElectionsClient.model.Candidate;
 
 
@@ -29,7 +29,7 @@ public class CandidateFrame extends javax.swing.JFrame {
     public CandidateFrame(Candidate candidate) {
         setLocationRelativeTo(null);
         initComponents();
-        Elections.setCandidateFrame(this);
+        ElectionsFrames.setCandidateFrame(this);
         // Параметры переноса слов
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);

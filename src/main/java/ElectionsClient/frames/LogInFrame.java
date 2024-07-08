@@ -11,8 +11,8 @@ import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
-import ElectionsClient.application.ApplicationState;
 import ElectionsClient.NewExceptions.NoElectionsException;
+import electionsClient.application.Application;
 import electionsClient.security.LoginData;
 import java.time.LocalDateTime;
 /**
@@ -150,9 +150,9 @@ public class LogInFrame extends javax.swing.JFrame {
             if(isLoginCorrect(loginData.getLogin())){
                 
                 if(isPasswordCorrect(loginData.getPassword())){
-                    ApplicationState.setCurrentUser(UserClient.tryLogIn(loginData));
+                    Application.setCurrentUser(UserClient.tryLogIn(loginData));
                     
-                    if(ApplicationState.getCurrentUser().isAdmin()){
+                    if(Application.getCurrentUser().isAdmin()){
                             AdminFrame adminFrame = new AdminFrame();
                             adminFrame.setVisible(true);
                             dispose();

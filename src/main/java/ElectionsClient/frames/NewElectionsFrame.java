@@ -13,8 +13,7 @@ import ElectionsClient.NewExceptions.InvalidDeleteException;
 import ElectionsClient.NewExceptions.InvalidElectionsStartException;
 import ElectionsClient.NewExceptions.InvalidForgettingVotesException;
 import ElectionsClient.NewExceptions.RequestException;
-import ElectionsClient.application.ApplicationState;
-import ElectionsClient.application.Elections;
+import ElectionsClient.application.ElectionsFrames;
 import ElectionsClient.application.FilesUtil;
 import ElectionsClient.model.Candidate;
 import ElectionsClient.model.ElectionsTime;
@@ -25,6 +24,7 @@ import ElectionsClient.NewExceptions.NoSuchUserException;
 import ElectionsClient.NewExceptions.NoUsersException;
 import ElectionsClient.NewExceptions.TooManyCandidatesException;
 import ElectionsClient.NewExceptions.UnableToReadFileException;
+import electionsClient.application.Application;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
@@ -192,7 +192,7 @@ public class NewElectionsFrame extends javax.swing.JFrame {
             HashSet<Candidate> candidates = CandidateClient.getCandidates();
  
             for(Candidate candidate : candidates)
-                writer.append(candidate.getName() + " - " + Elections.percentageOfVotes(candidate, candidates) + "% голосов \n");
+                writer.append(candidate.getName() + " - " + ElectionsFrames.percentageOfVotes(candidate, candidates) + "% голосов \n");
             
             HashSet<User> users = UserClient.getUsers();
             
@@ -227,7 +227,7 @@ public class NewElectionsFrame extends javax.swing.JFrame {
     
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         try{ //Проверим, что пользователь всё ещё админ
-           if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+           if(UserClient.checkIfAdmin(Application.getCurrentUser().getLogin())){
             
                 LocalDateTime beginTime =  LocalDateTime.parse(timeBeginField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
                 LocalDateTime endTime = LocalDateTime.parse(timeEndField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));

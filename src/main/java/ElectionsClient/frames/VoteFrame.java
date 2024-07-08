@@ -12,14 +12,14 @@ import ElectionsClient.NewExceptions.InvalidCandidateVoteException;
 import ElectionsClient.NewExceptions.InvalidVoteException;
 import ElectionsClient.NewExceptions.NoSuchCandidateIdException;
 import ElectionsClient.NewExceptions.RequestException;
-import ElectionsClient.application.ApplicationState;
-import ElectionsClient.application.Elections;
+import ElectionsClient.application.ElectionsFrames;
 import ElectionsClient.model.Candidate;
 import ElectionsClient.model.User;
 import ElectionsClient.NewExceptions.NoSuchUserException;
 import ElectionsClient.application.Waiter;
 import ElectionsClient.model.ElectionsTime;
 import ElectionsClient.NewExceptions.NoElectionsException;
+import electionsClient.application.Application;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import javax.swing.JCheckBox;
@@ -39,7 +39,6 @@ public class VoteFrame extends javax.swing.JFrame {
     private JCheckBox[] checkBoxArray;
     private JButton[] candidateButtonsArray;
     private int choice;
-    private int numberOfCandidates;
     private HashMap<Integer, Candidate> numberAndCandidate;
     /**
      * This method is called from within the constructor to initialize the form.
@@ -333,7 +332,7 @@ public class VoteFrame extends javax.swing.JFrame {
         jButton6,
         jButton7,
         };
-        Elections.setVoteFrame(this);
+        ElectionsFrames.setVoteFrame(this);
         try{
             //Хорошо бы счётчик выборов вынести чисто в окно для голосования, но это мб позже.
 
@@ -354,11 +353,10 @@ public class VoteFrame extends javax.swing.JFrame {
 
             
             HashSet<Candidate> candidates = CandidateClient.getCandidates();
-            numberOfCandidates = candidates.size();
             choice = -1;
 
             showCandidates(candidates);
-            User user = UserClient.getUserByLogin((ApplicationState.getCurrentUser().getLogin()));
+            User user = UserClient.getUserByLogin((Application.getCurrentUser().getLogin()));
             if(user.isVoted())
                 voteButton.setEnabled(false);
         } catch (NoSuchUserException |
@@ -373,12 +371,11 @@ public class VoteFrame extends javax.swing.JFrame {
        CandidateFrame candidateFrame = new CandidateFrame(numberAndCandidate.get(i));
        candidateFrame.setVisible(true);
        candidateFrame.setVoteFrame(this);
-       Elections.setCandidateFrame(candidateFrame);
+       ElectionsFrames.setCandidateFrame(candidateFrame);
     }
     
-    public void showCandidates(HashSet<Candidate> candidates){
+    public final void showCandidates(HashSet<Candidate> candidates){
         choice = -1;
-        numberOfCandidates = candidates.size();
         for(int i = MAX_CANDIDATES-1; i >= candidates.size(); i--){
             checkBoxArray[i].setVisible(false);
             candidateButtonsArray[i].setVisible(false);
@@ -398,7 +395,7 @@ public class VoteFrame extends javax.swing.JFrame {
     
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         try{
-            if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+            if(UserClient.checkIfAdmin(Application.getCurrentUser().getLogin())){
                 new AdminFrame().setVisible(true);
             } else{
                 LogInFrame logInFrame = new LogInFrame();
@@ -463,7 +460,7 @@ public class VoteFrame extends javax.swing.JFrame {
         } else {
             try{
 
-                User user = UserClient.getUserByLogin(ApplicationState.getCurrentUser().getLogin());
+                User user = UserClient.getUserByLogin(Application.getCurrentUser().getLogin());
                 if(!user.isVoted()){
                     CandidateClient.voteForCandidate(numberAndCandidate.get(choice));
                     UserClient.markAsVoted(user.getLogin());
@@ -522,7 +519,7 @@ public class VoteFrame extends javax.swing.JFrame {
         FilterFrame filterFrame = new FilterFrame();
         filterFrame.setVisible(true);
         filterFrame.setVoteFrame(this);
-        Elections.setFilterFrame(filterFrame);
+        ElectionsFrames.setFilterFrame(filterFrame);
         enableAllButtons(false);
     }//GEN-LAST:event_filterButtonActionPerformed
 

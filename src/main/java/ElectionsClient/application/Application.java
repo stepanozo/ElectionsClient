@@ -8,7 +8,10 @@ import ElectionsClient.Service.Http.CandidateHttpService;
 import ElectionsClient.Service.Http.ElectionsTimeHttpService;
 import ElectionsClient.Service.Http.UserHttpService;
 import ElectionsClient.frames.LogInFrame;
+import ElectionsClient.model.User;
 import javax.swing.SwingUtilities;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
@@ -20,6 +23,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 @SpringBootApplication(scanBasePackages = "ElectionsClient")
 public class Application implements CommandLineRunner {
     
+    @Getter
+    @Setter
+    private static User currentUser;
+   
     public static void main(String[] args) {
         ApplicationContext contexto = new SpringApplicationBuilder(Application.class)
                 .web(WebApplicationType.SERVLET)

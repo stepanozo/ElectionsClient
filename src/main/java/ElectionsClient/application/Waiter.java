@@ -16,7 +16,7 @@ import lombok.Setter;
  */
 public class Waiter implements Runnable {
     
-    private static long delay = 1L;
+    private static final long delay = 1L;
     
     @Getter
     @Setter
@@ -26,7 +26,7 @@ public class Waiter implements Runnable {
     @Setter
     private static LocalDateTime ending;
     
-    private static Waiter waiter = new Waiter();
+    private static final Waiter waiter = new Waiter();
     
     public static Waiter getInstance(){
         return waiter;
@@ -51,14 +51,14 @@ public class Waiter implements Runnable {
     public void run() {
         waitForTime(ending); //Сначала ждём конца выборов
 
-        if(Elections.getVoteFrame() != null){
+        if(ElectionsFrames.getVoteFrame() != null){
             new ElectionsResultFrame().setVisible(true);
             
-            Elections.getVoteFrame().dispose();
-            if(Elections.getCandidateFrame() != null)
-                Elections.getCandidateFrame().dispose();
-            if(Elections.getFilterFrame() != null)
-                Elections.getFilterFrame().dispose();
+            ElectionsFrames.getVoteFrame().dispose();
+            if(ElectionsFrames.getCandidateFrame() != null)
+                ElectionsFrames.getCandidateFrame().dispose();
+            if(ElectionsFrames.getFilterFrame() != null)
+                ElectionsFrames.getFilterFrame().dispose();
         }
     }
 }
