@@ -12,7 +12,6 @@ import ElectionsClient.frames.CandidateFrame;
 import ElectionsClient.frames.FilterFrame;
 import ElectionsClient.frames.VoteFrame;
 import ElectionsClient.model.Candidate;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import lombok.Getter;
 import lombok.Setter;

@@ -5,9 +5,9 @@
 package ElectionsClient.application;
 
 import ElectionsClient.model.Candidate;
-import electionsClient.Exceptions.NoSuchFolderException;
-import electionsClient.Exceptions.TooManyCandidatesException;
-import electionsClient.Exceptions.UnableToReadFileException;
+import ElectionsClient.NewExceptions.NoSuchFolderException;
+import ElectionsClient.NewExceptions.TooManyCandidatesException;
+import ElectionsClient.NewExceptions.UnableToReadFileException;
 import java.util.ArrayList;
 import java.io.File;
 /**

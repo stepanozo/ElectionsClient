@@ -4,7 +4,7 @@
  */
 package ElectionsClient.Service.Http;
 
-import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
+import ElectionsClient.NewExceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.InvalidAdminRightsException;
 import ElectionsClient.NewExceptions.InvalidForgettingVotesException;
@@ -12,15 +12,12 @@ import ElectionsClient.NewExceptions.InvalidVoteException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.UserAlreadyExistsException;
 import ElectionsClient.Service.UserClientService;
-import ElectionsClient.frames.InfoFrame;
 import ElectionsClient.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import electionsClient.Exceptions.HTTPException;
-import electionsClient.Exceptions.NoCandidatesException;
-import electionsClient.Exceptions.NoSuchUserException;
-import electionsClient.Exceptions.NoUsersException;
+import ElectionsClient.NewExceptions.NoSuchUserException;
+import ElectionsClient.NewExceptions.NoUsersException;
 import electionsClient.security.LoginData;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -30,7 +27,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashSet;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 
 /**
  *
@@ -109,8 +105,7 @@ public class UserHttpService implements UserClientService{
             
         } catch(IOException | InterruptedException e){
             throw new RequestException("Ошибка запроса.");
-        }
-                
+        }        
     }
     
     @Override

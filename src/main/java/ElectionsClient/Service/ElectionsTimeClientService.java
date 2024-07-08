@@ -8,7 +8,7 @@ import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.InvalidElectionsStartException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.model.ElectionsTime;
-import electionsClient.Exceptions.NoElectionsException;
+import ElectionsClient.NewExceptions.NoElectionsException;
 import org.springframework.stereotype.Service;
 
 /**

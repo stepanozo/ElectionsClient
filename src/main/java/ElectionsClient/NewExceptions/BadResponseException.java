@@ -13,7 +13,7 @@ import lombok.Getter;
 public class BadResponseException extends Exception{
     
     @Getter
-    private int status;
+    private final int status;
     
     public BadResponseException(String message, int status){
         super(message);

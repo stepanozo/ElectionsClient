@@ -12,6 +12,7 @@ public class InfoFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form ConnectionErrorFrame
+     * @param text
      */
     public InfoFrame(String text) {
         setLocationRelativeTo(null);

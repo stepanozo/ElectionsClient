@@ -13,7 +13,7 @@ import ElectionsClient.model.ElectionsTime;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
-import electionsClient.Exceptions.NoElectionsException;
+import ElectionsClient.NewExceptions.NoElectionsException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;

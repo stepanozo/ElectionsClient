@@ -11,17 +11,11 @@ import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ApplicationState;
 import ElectionsClient.application.Elections;
-import ElectionsClient.application.MainClass;
 import ElectionsClient.model.Candidate;
-import electionsClient.Exceptions.HTTPException;
-import ElectionsClient.Service.Http.HttpUtil;
-import ElectionsClient.Service.UserClientService;
-import electionsClient.Exceptions.NoSuchUserException;
-import java.sql.SQLException;
+import ElectionsClient.NewExceptions.NoSuchUserException;
 import java.util.HashSet;
 import javax.swing.JLabel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  *

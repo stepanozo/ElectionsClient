@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 public class UserAlreadyExistsException extends Exception{
     @Getter
-    private String login;
+    private final String login;
     
     public UserAlreadyExistsException(String message, String login){
         super(message);

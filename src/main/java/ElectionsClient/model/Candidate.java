@@ -4,14 +4,12 @@
  */
 package ElectionsClient.model;
 
-import electionsClient.Exceptions.UnableToReadFileException;
-import java.io.FileReader;
+import ElectionsClient.NewExceptions.UnableToReadFileException;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.File;
 import java.io.BufferedReader;
 import java.util.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 /**

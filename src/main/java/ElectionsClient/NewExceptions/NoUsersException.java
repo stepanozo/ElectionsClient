@@ -2,22 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package electionsClient.Exceptions;
+package ElectionsClient.NewExceptions;
 
 /**
  *
  * @author чтепоноза
  */
-public class NoSuchCandidateException extends Exception{
+public class NoUsersException extends Exception{
     
-    private String name;
-    
-    public String getName(){
-        return name;
-    }
-    
-    public NoSuchCandidateException(String message, String name){
+    public NoUsersException(String message){
         super(message);
-        this.name = name;
     }
 }

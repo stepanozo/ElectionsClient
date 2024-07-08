@@ -2,22 +2,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package electionsClient.Exceptions;
+package ElectionsClient.NewExceptions;
+
+import lombok.Getter;
 
 /**
  *
  * @author чтепоноза
  */
-public class NotAdminException extends Exception{
+public class UnableToReadFileException extends Exception{
     
-    private String login;
+    @Getter
+    private final String nameOfFile ;
     
-    public String getLogin(){
-        return login;
-    }
-    
-    public NotAdminException(String message, String login){
+     public UnableToReadFileException(String message, String nameOfFile){
         super(message);
-        this.login = login;
+        this.nameOfFile = nameOfFile;
     }
 }

@@ -9,7 +9,7 @@ import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.InvalidElectionsStartException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.model.ElectionsTime;
-import electionsClient.Exceptions.NoElectionsException;
+import ElectionsClient.NewExceptions.NoElectionsException;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 

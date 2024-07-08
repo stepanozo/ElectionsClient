@@ -8,14 +8,9 @@ import ElectionsClient.EntityClient.ElectionsTimeClient;
 import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
-import ElectionsClient.application.Elections;
-import electionsClient.Exceptions.HTTPException;
-import ElectionsClient.Service.Http.HttpUtil;
 import ElectionsClient.application.ApplicationState;
-import ElectionsClient.application.MainClass;
-import electionsClient.Exceptions.NoElectionsException;
-import electionsClient.Exceptions.NoSuchUserException;
-import java.sql.SQLException;
+import ElectionsClient.NewExceptions.NoElectionsException;
+import ElectionsClient.NewExceptions.NoSuchUserException;
 import java.time.LocalDateTime;
 /**
  *

@@ -29,24 +29,5 @@ public class MyJsonConverter {
         
         return body;
     }
-    
-//    public static ElectionsTime jstonToElectionsTime(String json){
-//        
-//        int firstQuoteIndex = json.indexOf('\"');
-//        int secondQuoteIndex = json.indexOf('\"', firstQuoteIndex + 1);
-//        int thirdQuoteIndex = json.indexOf('\"', firstQuoteIndex + 1);
-//        int fourthQuoteIndex = json.indexOf('\"', firstQuoteIndex + 1);
-//        String substringFromFirstQuote = json.substring(firstQuoteIndex, i);
-//
-//
-//        int secondQuoteIndex = text.indexOf('\"', firstQuoteIndex + 1);
-//        int thirdQuoteIndex = text.indexOf('\"', secondQuoteIndex + 1);
-//        String substringFromThirdQuote = text.substring(thirdQuoteIndex);
-//    }
+   
 }
-
-//{
-//    "dateTimeOfBegining": "2024-06-26T18:00:00",
-//    "dateTimeOfEnding": "2024-06-26T18:40:00",
-//    "ended": false
-//}

@@ -4,7 +4,7 @@
  */
 package ElectionsClient.Service;
 
-import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
+import ElectionsClient.NewExceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.InvalidAdminRightsException;
 import ElectionsClient.NewExceptions.InvalidForgettingVotesException;
@@ -12,11 +12,10 @@ import ElectionsClient.NewExceptions.InvalidVoteException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.UserAlreadyExistsException;
 import ElectionsClient.model.User;
-import electionsClient.Exceptions.NoSuchUserException;
-import electionsClient.Exceptions.NoUsersException;
+import ElectionsClient.NewExceptions.NoSuchUserException;
+import ElectionsClient.NewExceptions.NoUsersException;
 import electionsClient.security.LoginData;
 import java.util.HashSet;
-import org.springframework.stereotype.Service;
 
 /**
  *

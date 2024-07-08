@@ -16,18 +16,15 @@ import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ApplicationState;
 import ElectionsClient.application.Elections;
 import ElectionsClient.application.FilesUtil;
-import ElectionsClient.application.MainClass;
-import ElectionsClient.application.Waiter;
 import ElectionsClient.model.Candidate;
 import ElectionsClient.model.ElectionsTime;
 import ElectionsClient.model.User;
-import electionsClient.Exceptions.NoCandidatesException;
-import electionsClient.Exceptions.NoElectionsException;
-import electionsClient.Exceptions.NoSuchFolderException;
-import electionsClient.Exceptions.NoSuchUserException;
-import electionsClient.Exceptions.NoUsersException;
-import electionsClient.Exceptions.TooManyCandidatesException;
-import electionsClient.Exceptions.UnableToReadFileException;
+import ElectionsClient.NewExceptions.NoElectionsException;
+import ElectionsClient.NewExceptions.NoSuchFolderException;
+import ElectionsClient.NewExceptions.NoSuchUserException;
+import ElectionsClient.NewExceptions.NoUsersException;
+import ElectionsClient.NewExceptions.TooManyCandidatesException;
+import ElectionsClient.NewExceptions.UnableToReadFileException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
@@ -171,7 +168,7 @@ public class NewElectionsFrame extends javax.swing.JFrame {
         startButton.setEnabled(false);
     }
     
-     private void savePreviousElections() throws NoElectionsException, NoCandidatesException, NoUsersException{
+     private void savePreviousElections() throws NoElectionsException,  NoUsersException{
         
         String currentDir = System.getProperty("user.dir");
         File folder = new File(currentDir + "\\Save");
@@ -272,7 +269,6 @@ public class NewElectionsFrame extends javax.swing.JFrame {
                 UnableToReadFileException |
                 TooManyCandidatesException |
                 NoElectionsException |
-                NoCandidatesException |
                 NoUsersException |
                 RequestException |
                 BadResponseException |

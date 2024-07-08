@@ -4,8 +4,6 @@
  */
 package ElectionsClient.model;
 
-import java.awt.List;
-import java.util.ArrayList;
 import java.util.HashSet;
 import lombok.Getter;
 import lombok.Setter;

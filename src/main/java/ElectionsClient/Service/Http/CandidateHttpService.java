@@ -10,15 +10,12 @@ import ElectionsClient.NewExceptions.InvalidCandidateVoteException;
 import ElectionsClient.NewExceptions.InvalidDeleteException;
 import ElectionsClient.NewExceptions.NoSuchCandidateIdException;
 import ElectionsClient.NewExceptions.RequestException;
-import ElectionsClient.NewExceptions.UserAlreadyExistsException;
 import ElectionsClient.Service.CandidateClientService;
 import ElectionsClient.model.Candidate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import electionsClient.Exceptions.HTTPException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -33,6 +30,7 @@ import org.springframework.http.HttpStatus;
  */
 public class CandidateHttpService implements CandidateClientService{
     
+    @Override
     public void newCandidate(Candidate candidate) throws BadResponseException, RequestException, CandidateAlreadyExistsException{
         
         String serverUrl = HttpUtil.getServerUrl();
@@ -69,6 +67,7 @@ public class CandidateHttpService implements CandidateClientService{
         }
     }
     
+    @Override
     public HashSet<Candidate> getCandidates() throws BadResponseException, RequestException {//, NoCandidatesException{
         String serverUrl = HttpUtil.getServerUrl();
         HttpClient client = HttpUtil.getClient();
@@ -102,7 +101,7 @@ public class CandidateHttpService implements CandidateClientService{
     }
     
     
-    //Тут бы сделать разные статусы и желательно возврат исключения
+    @Override
     public void deleteAllCandidates() throws BadResponseException, RequestException, InvalidDeleteException{
         String serverUrl = HttpUtil.getServerUrl();
         HttpClient client = HttpUtil.getClient();
@@ -127,14 +126,13 @@ public class CandidateHttpService implements CandidateClientService{
         }
         
     }
-    
-
-    
-    //Возможно добавить кандидату ID, и тогда не придётся возиться с кодировкой имени. Просто голосовать по ID, а не по имени
+   
+    @Override
     public void voteForCandidate(Candidate candidate) throws BadResponseException, RequestException, InvalidCandidateVoteException, NoSuchCandidateIdException {
         voteForCandidateById(candidate.getId());
     }
     
+    @Override
     public void voteForCandidateById(long id) throws BadResponseException, RequestException, InvalidCandidateVoteException, NoSuchCandidateIdException {
         
         String serverUrl = HttpUtil.getServerUrl();

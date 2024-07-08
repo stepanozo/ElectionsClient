@@ -5,10 +5,7 @@ import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.InvalidAdminRightsException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ApplicationState;
-import electionsClient.Exceptions.AlreadyAdminException;
-import electionsClient.Exceptions.NoSuchUserException;
-import electionsClient.Exceptions.NotAdminException;
-import java.sql.*;
+import ElectionsClient.NewExceptions.NoSuchUserException;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
 

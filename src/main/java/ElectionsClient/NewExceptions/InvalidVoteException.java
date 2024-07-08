@@ -10,7 +10,7 @@ package ElectionsClient.NewExceptions;
  */
 public class InvalidVoteException extends Exception {
     
-    private String login;
+    private final String login;
     
     public InvalidVoteException(String message, String login){
         super(message);

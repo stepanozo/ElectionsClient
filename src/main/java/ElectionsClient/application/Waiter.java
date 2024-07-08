@@ -4,7 +4,6 @@
  */
 package ElectionsClient.application;
 
-import ElectionsClient.EntityClient.ElectionsTimeClient;
 import ElectionsClient.frames.ElectionsResultFrame;
 import ElectionsClient.frames.InfoFrame;
 import java.time.LocalDateTime;

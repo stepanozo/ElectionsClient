@@ -9,17 +9,7 @@ import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.UserAlreadyExistsException;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import ElectionsClient.frames.LogInFrame;
-import electionsClient.Exceptions.HTTPException;
-import ElectionsClient.Service.Http.HttpUtil;
-import ElectionsClient.Service.UserClientService;
 import electionsClient.security.LoginData;
-import java.net.http.HttpResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 /**
  *

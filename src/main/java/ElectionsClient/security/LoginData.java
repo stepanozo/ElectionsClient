@@ -16,7 +16,7 @@ import lombok.Getter;
 public class LoginData {
     
     @Getter
-    private String login;
+    private final String login;
     @Getter
-    private String password; 
+    private final String password; 
 }

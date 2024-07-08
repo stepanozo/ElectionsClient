@@ -4,7 +4,6 @@
  */
 package ElectionsClient.NewExceptions;
 
-import ElectionsClient.model.Candidate;
 import lombok.Getter;
 
 /**

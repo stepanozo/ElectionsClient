@@ -4,12 +4,15 @@
  */
 package ElectionsClient.NewExceptions;
 
+import lombok.Getter;
+
 /**
  *
  * @author чтепоноза
  */
 public class InvalidAdminRightsException extends Exception {
     
+    @Getter
     private final String login;
     
     public InvalidAdminRightsException(String message, String login){

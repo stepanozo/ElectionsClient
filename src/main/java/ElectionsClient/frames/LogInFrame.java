@@ -8,12 +8,11 @@ package ElectionsClient.frames;
 
 import ElectionsClient.EntityClient.ElectionsTimeClient;
 import ElectionsClient.EntityClient.UserClient;
-import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
+import ElectionsClient.NewExceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ApplicationState;
-import ElectionsClient.application.Elections;
-import electionsClient.Exceptions.NoElectionsException;
+import ElectionsClient.NewExceptions.NoElectionsException;
 import electionsClient.security.LoginData;
 import java.time.LocalDateTime;
 /**
