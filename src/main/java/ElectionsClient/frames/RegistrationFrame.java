@@ -9,7 +9,7 @@ import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.UserAlreadyExistsException;
-import electionsClient.security.LoginData;
+import ElectionsClient.security.LoginData;
 
 /**
  *

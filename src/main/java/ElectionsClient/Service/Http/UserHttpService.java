@@ -18,7 +18,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import ElectionsClient.NewExceptions.NoSuchUserException;
 import ElectionsClient.NewExceptions.NoUsersException;
-import electionsClient.security.LoginData;
+import ElectionsClient.security.LoginData;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;

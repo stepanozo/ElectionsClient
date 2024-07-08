@@ -13,7 +13,7 @@ import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.NoElectionsException;
 import ElectionsClient.application.Application;
-import electionsClient.security.LoginData;
+import ElectionsClient.security.LoginData;
 import java.time.LocalDateTime;
 /**
  *

@@ -14,7 +14,7 @@ import ElectionsClient.NewExceptions.UserAlreadyExistsException;
 import ElectionsClient.model.User;
 import ElectionsClient.NewExceptions.NoSuchUserException;
 import ElectionsClient.NewExceptions.NoUsersException;
-import electionsClient.security.LoginData;
+import ElectionsClient.security.LoginData;
 import java.util.HashSet;
 
 /**
