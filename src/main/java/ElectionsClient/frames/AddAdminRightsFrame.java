@@ -5,7 +5,7 @@ import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.InvalidAdminRightsException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.NoSuchUserException;
-import electionsClient.application.Application;
+import ElectionsClient.application.Application;
 import java.util.Objects;
 
 /*

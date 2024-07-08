@@ -1,4 +1,4 @@
-package electionsClient.application;
+package ElectionsClient.application;
 
 import ElectionsClient.Configuration.SpringConfig;
 import ElectionsClient.EntityClient.CandidateClient;

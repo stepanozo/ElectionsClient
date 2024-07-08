@@ -19,7 +19,7 @@ import ElectionsClient.NewExceptions.NoSuchUserException;
 import ElectionsClient.application.Waiter;
 import ElectionsClient.model.ElectionsTime;
 import ElectionsClient.NewExceptions.NoElectionsException;
-import electionsClient.application.Application;
+import ElectionsClient.application.Application;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import javax.swing.JCheckBox;

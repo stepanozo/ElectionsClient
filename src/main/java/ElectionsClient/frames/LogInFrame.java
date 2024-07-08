@@ -12,7 +12,7 @@ import ElectionsClient.NewExceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.NoElectionsException;
-import electionsClient.application.Application;
+import ElectionsClient.application.Application;
 import electionsClient.security.LoginData;
 import java.time.LocalDateTime;
 /**

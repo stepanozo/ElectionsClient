@@ -12,7 +12,7 @@ import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ElectionsFrames;
 import ElectionsClient.model.Candidate;
 import ElectionsClient.NewExceptions.NoSuchUserException;
-import electionsClient.application.Application;
+import ElectionsClient.application.Application;
 import java.util.HashSet;
 import javax.swing.JLabel;
 import org.springframework.beans.factory.annotation.Autowired;

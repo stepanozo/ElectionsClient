@@ -24,7 +24,7 @@ import ElectionsClient.NewExceptions.NoSuchUserException;
 import ElectionsClient.NewExceptions.NoUsersException;
 import ElectionsClient.NewExceptions.TooManyCandidatesException;
 import ElectionsClient.NewExceptions.UnableToReadFileException;
-import electionsClient.application.Application;
+import ElectionsClient.application.Application;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;

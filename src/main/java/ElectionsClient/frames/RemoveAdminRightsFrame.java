@@ -5,9 +5,8 @@ import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.InvalidAdminRightsException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.NoSuchUserException;
-import electionsClient.application.Application;
+import ElectionsClient.application.Application;
 import java.util.Objects;
-import org.springframework.stereotype.Component;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Component;
  * @author чтепоноза
  */
 
-@Component
 public class RemoveAdminRightsFrame extends javax.swing.JFrame {
 
     

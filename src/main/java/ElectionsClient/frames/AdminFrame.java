@@ -10,7 +10,7 @@ import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.NewExceptions.NoElectionsException;
 import ElectionsClient.NewExceptions.NoSuchUserException;
-import electionsClient.application.Application;
+import ElectionsClient.application.Application;
 import java.time.LocalDateTime;
 /**
  *
