@@ -132,7 +132,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="formatLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&#x412;&#x432;&#x43e;&#x434;&#x438;&#x442;&#x435; &#x432;&#x440;&#x435;&#x43c;&#x44f; &#x432; &#x444;&#x43e;&#x440;&#x43c;&#x430;&#x442;&#x435; &#x413;&#x413;&#x413;&#x413;-&#x41c;&#x41c;-&#x414;&#x414; &#x447;&#x447;:&#x43c;&#x43c;:&#x441;&#x441;"/>
+        <Property name="text" type="java.lang.String" value="&#x412;&#x432;&#x43e;&#x434;&#x438;&#x442;&#x435; &#x432;&#x440;&#x435;&#x43c;&#x44f; &#x432; &#x444;&#x43e;&#x440;&#x43c;&#x430;&#x442;&#x435; &#x413;&#x413;&#x413;&#x413;-&#x41c;&#x41c;-&#x414;&#x414; &#x447;&#x447;:&#x43c;&#x43c;"/>
       </Properties>
     </Component>
   </SubComponents>

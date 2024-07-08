@@ -101,7 +101,8 @@ public class ElectionsTimeHttpService implements ElectionsTimeClientService{
         String serverUrl = HttpUtil.getServerUrl();
         HttpClient client = HttpUtil.getClient();
         String requestUrl = serverUrl + "/electionsTime";
-
+                
+                
         String json = MyJsonConverter.electionsTimeToJson(electionsTime);
         
         HttpRequest request = HttpRequest.newBuilder()

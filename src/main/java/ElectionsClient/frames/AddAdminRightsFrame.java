@@ -1,6 +1,13 @@
 package ElectionsClient.frames;
 
+import ElectionsClient.EntityClient.UserClient;
+import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.InvalidAdminRightsException;
+import ElectionsClient.NewExceptions.RequestException;
+import ElectionsClient.application.ApplicationState;
+import electionsClient.Exceptions.NoSuchUserException;
 import java.sql.*;
+import java.util.Objects;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -109,7 +116,23 @@ public class AddAdminRightsFrame extends javax.swing.JFrame {
     }
     
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-    
+        if(Objects.equals(loginField.getText(),ApplicationState.getCurrentUser().getLogin()))
+            new InfoFrame("Нельзя указывать себя.").setVisible(true);
+        else{ 
+            try{//Проверим, что пользователь всё ещё админ
+                if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+                    UserClient.markAsAdmin(loginField.getText(), true);
+                    new InfoFrame("Пользователь успешно назначен админом").setVisible(true);
+                }else {
+                    blockAdminButtons();
+                    adminFrame.blockAdminButtons();
+                    adminFrame.notAdminAnymore();
+                    new InfoFrame("Вы больше не являетесь админом").setVisible(true);
+                }
+            } catch(NoSuchUserException | RequestException | BadResponseException | InvalidAdminRightsException e){
+               new InfoFrame(e.getMessage()).setVisible(true);
+            }
+        }    
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed

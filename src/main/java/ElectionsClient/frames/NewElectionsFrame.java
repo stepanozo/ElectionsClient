@@ -20,9 +20,6 @@ import ElectionsClient.application.MainClass;
 import ElectionsClient.application.Waiter;
 import ElectionsClient.model.Candidate;
 import ElectionsClient.model.ElectionsTime;
-import electionsClient.Exceptions.HTTPException;
-import ElectionsClient.Service.Http.HttpUtil;
-import ElectionsClient.Service.UserClientService;
 import ElectionsClient.model.User;
 import electionsClient.Exceptions.NoCandidatesException;
 import electionsClient.Exceptions.NoElectionsException;
@@ -36,12 +33,9 @@ import java.time.format.DateTimeFormatter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.time.format.DateTimeParseException;
 import java.util.HashSet;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 /**
  *
  * @author чтепоноза
@@ -117,7 +111,7 @@ public class NewElectionsFrame extends javax.swing.JFrame {
             }
         });
 
-        formatLabel.setText("Вводите время в формате ГГГГ-ММ-ДД чч:мм:сс");
+        formatLabel.setText("Вводите время в формате ГГГГ-ММ-ДД чч:мм");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -238,8 +232,8 @@ public class NewElectionsFrame extends javax.swing.JFrame {
         try{ //Проверим, что пользователь всё ещё админ
            if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
             
-                LocalDateTime beginTime =  LocalDateTime.parse(timeBeginField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                LocalDateTime endTime = LocalDateTime.parse(timeEndField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                LocalDateTime beginTime =  LocalDateTime.parse(timeBeginField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                LocalDateTime endTime = LocalDateTime.parse(timeEndField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
                 if(endTime.isAfter(beginTime)){
                     
                     if(ElectionsTimeClient.electionsHaveRecords()){ //Здесь мы должны сгрузить в файл информацию о предыдущих выборах, если они были
@@ -249,8 +243,6 @@ public class NewElectionsFrame extends javax.swing.JFrame {
                     ArrayList<Candidate> candidates = FilesUtil.getCandidatesFromFiles(candidateFolderPathField.getText());
                     
                     ElectionsTimeClient.newElectionsTime(new ElectionsTime(beginTime, endTime));
-                    Elections.setTimeOfBegining(beginTime);
-                    Elections.setTimeOfEnding(endTime);
                 
                     UserClient.forgetAllVotes();
                     CandidateClient.deleteAllCandidates();
@@ -258,15 +250,7 @@ public class NewElectionsFrame extends javax.swing.JFrame {
                     for(Candidate candidate: candidates){
                         CandidateClient.newCandidate(candidate); //Заполняем таблицу кандидатов
                     }
-                    
-                    //Теперь запустим ожидание конца выборов.
-                    if(MainClass.getWaiterThread() != null && MainClass.getWaiterThread().isAlive()) 
-                        Waiter.setExit(true); //Прерываем старый поток, чтобы он не выдал внезапно результаты старых выборов
-                    Waiter.setExit(false);
-                    MainClass.setWaiterThread(new Thread(Waiter.getInstance()));
-                    MainClass.getWaiterThread().start();
-                    
-                    
+                       
                     dispose();
                 }   
                 else{

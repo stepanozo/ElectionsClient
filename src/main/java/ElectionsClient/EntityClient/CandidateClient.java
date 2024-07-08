@@ -5,21 +5,13 @@
 package ElectionsClient.EntityClient;
 
 import ElectionsClient.Service.*;
-import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.CandidateAlreadyExistsException;
 import ElectionsClient.NewExceptions.InvalidCandidateVoteException;
 import ElectionsClient.NewExceptions.InvalidDeleteException;
-import ElectionsClient.NewExceptions.InvalidForgettingVotesException;
-import ElectionsClient.NewExceptions.InvalidVoteException;
 import ElectionsClient.NewExceptions.NoSuchCandidateIdException;
 import ElectionsClient.NewExceptions.RequestException;
-import ElectionsClient.NewExceptions.UserAlreadyExistsException;
 import ElectionsClient.model.Candidate;
-import ElectionsClient.model.User;
-import electionsClient.Exceptions.NoSuchUserException;
-import electionsClient.Exceptions.NoUsersException;
-import electionsClient.security.LoginData;
 import java.util.HashSet;
 import lombok.Setter;
 import org.springframework.stereotype.Service;

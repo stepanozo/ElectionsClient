@@ -5,6 +5,7 @@
 package ElectionsClient.frames;
 
 import ElectionsClient.EntityClient.CandidateClient;
+import ElectionsClient.EntityClient.ElectionsTimeClient;
 import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.InvalidCandidateVoteException;
@@ -15,9 +16,11 @@ import ElectionsClient.application.ApplicationState;
 import ElectionsClient.application.Elections;
 import ElectionsClient.model.Candidate;
 import ElectionsClient.model.User;
-import electionsClient.Exceptions.HTTPException;
 import electionsClient.Exceptions.NoSuchUserException;
-import ElectionsClient.Service.Http.HttpUtil;
+import ElectionsClient.application.Waiter;
+import ElectionsClient.model.ElectionsTime;
+import electionsClient.Exceptions.NoElectionsException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import javax.swing.JCheckBox;
 import javax.swing.JButton;
@@ -31,7 +34,7 @@ import java.util.HashMap;
 
 public class VoteFrame extends javax.swing.JFrame {
 
-    
+    private Thread waiterThread;
     private final int MAX_CANDIDATES = 8;
     private JCheckBox[] checkBoxArray;
     private JButton[] candidateButtonsArray;
@@ -332,6 +335,23 @@ public class VoteFrame extends javax.swing.JFrame {
         };
         Elections.setVoteFrame(this);
         try{
+            //Хорошо бы счётчик выборов вынести чисто в окно для голосования, но это мб позже.
+
+            if(ElectionsTimeClient.electionsHaveRecords()){
+                    
+                ElectionsTime electionsTime = ElectionsTimeClient.getLatestElectionsTime();
+
+                if(electionsTime.getDateTimeOfEnding().isAfter(LocalDateTime.now())){
+                    //Теперь запустим ожидание конца выборов.
+                    
+                    Waiter.setExit(false);
+                    Waiter.setEnding(electionsTime.getDateTimeOfEnding());
+                    waiterThread = new Thread(Waiter.getInstance());
+                    waiterThread.start();
+                }
+
+            }
+
             
             HashSet<Candidate> candidates = CandidateClient.getCandidates();
             numberOfCandidates = candidates.size();
@@ -343,7 +363,7 @@ public class VoteFrame extends javax.swing.JFrame {
                 voteButton.setEnabled(false);
         } catch (NoSuchUserException |
                 BadResponseException |
-                RequestException e){
+                RequestException | NoElectionsException e){
             new InfoFrame(e.getMessage()).setVisible(true);
         }
     }
@@ -353,6 +373,7 @@ public class VoteFrame extends javax.swing.JFrame {
        CandidateFrame candidateFrame = new CandidateFrame(numberAndCandidate.get(i));
        candidateFrame.setVisible(true);
        candidateFrame.setVoteFrame(this);
+       Elections.setCandidateFrame(candidateFrame);
     }
     
     public void showCandidates(HashSet<Candidate> candidates){
@@ -501,6 +522,7 @@ public class VoteFrame extends javax.swing.JFrame {
         FilterFrame filterFrame = new FilterFrame();
         filterFrame.setVisible(true);
         filterFrame.setVoteFrame(this);
+        Elections.setFilterFrame(filterFrame);
         enableAllButtons(false);
     }//GEN-LAST:event_filterButtonActionPerformed
 

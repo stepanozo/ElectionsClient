@@ -7,6 +7,7 @@ package ElectionsClient.EntityClient;
 import ElectionsClient.Service.*;
 import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.InvalidAdminRightsException;
 import ElectionsClient.NewExceptions.InvalidForgettingVotesException;
 import ElectionsClient.NewExceptions.InvalidVoteException;
 import ElectionsClient.NewExceptions.RequestException;
@@ -51,5 +52,9 @@ public class UserClient {
     }
     public static void forgetAllVotes() throws RequestException, BadResponseException, InvalidForgettingVotesException{
         service.forgetAllVotes();
+    }
+    
+    public static void markAsAdmin(String login, boolean isAdmin) throws NoSuchUserException, InvalidAdminRightsException, RequestException, BadResponseException{
+        service.markAsAdmin(login, isAdmin);
     }
 }

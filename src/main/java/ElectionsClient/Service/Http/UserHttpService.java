@@ -6,6 +6,7 @@ package ElectionsClient.Service.Http;
 
 import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.InvalidAdminRightsException;
 import ElectionsClient.NewExceptions.InvalidForgettingVotesException;
 import ElectionsClient.NewExceptions.InvalidVoteException;
 import ElectionsClient.NewExceptions.RequestException;
@@ -107,7 +108,7 @@ public class UserHttpService implements UserClientService{
             }
             
         } catch(IOException | InterruptedException e){
-            throw new RequestException("Ошибка запроса по адресу ");
+            throw new RequestException("Ошибка запроса.");
         }
                 
     }
@@ -217,7 +218,7 @@ public class UserHttpService implements UserClientService{
         String serverUrl = HttpUtil.getServerUrl();
         HttpClient client = HttpUtil.getClient();
         
-        String requestUrl = serverUrl + "/users/" + login + ":mark-as-voted";
+        String requestUrl = serverUrl + "/users/" + login + "/mark-as-voted";
         
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(requestUrl))
@@ -269,6 +270,37 @@ public class UserHttpService implements UserClientService{
             }
         } catch (IOException | InterruptedException e){
             throw new RequestException("Ошибка обнуления голосов избирателей");
+        }
+        
+    }
+    
+        //Тут бы сделать разные статусы и желательно возврат исключения
+    @Override
+    public void markAsAdmin(String login, boolean isAdmin) throws NoSuchUserException, InvalidAdminRightsException, RequestException, BadResponseException{
+        String serverUrl = HttpUtil.getServerUrl();
+        HttpClient client = HttpUtil.getClient();
+        
+        String requestUrl = serverUrl + "/users/" + login + "/mark-as-admin/" + isAdmin;
+        
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(requestUrl))
+            .method("PATCH", HttpRequest.BodyPublishers.noBody())
+            .build();
+        try{
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            
+            switch(HttpStatus.resolve(response.statusCode())){
+                case HttpStatus.NO_CONTENT:
+                    throw new NoSuchUserException("Пользователь не существует: " + login, login);
+                case HttpStatus.CONFLICT:
+                    throw new InvalidAdminRightsException(response.body(), login);
+                case HttpStatus.OK:
+                    return;
+                default:
+                    throw new BadResponseException("Неудачный ответ при попытке изменить права: " + response.statusCode(), response.statusCode());
+            }
+        } catch (IOException | InterruptedException e){
+            throw new RequestException("Ошибка при попытке изменить права");
         }
         
     }

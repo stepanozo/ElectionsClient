@@ -6,6 +6,7 @@ package ElectionsClient.Service;
 
 import ElectionsClient.Exceptions.WrongLoginOrPasswordException;
 import ElectionsClient.NewExceptions.BadResponseException;
+import ElectionsClient.NewExceptions.InvalidAdminRightsException;
 import ElectionsClient.NewExceptions.InvalidForgettingVotesException;
 import ElectionsClient.NewExceptions.InvalidVoteException;
 import ElectionsClient.NewExceptions.RequestException;
@@ -37,4 +38,6 @@ public interface UserClientService {
     public void markAsVoted(String login) throws NoSuchUserException, InvalidVoteException, RequestException, BadResponseException;
     
     public void forgetAllVotes() throws RequestException, BadResponseException, InvalidForgettingVotesException;
+    
+    public void markAsAdmin(String login, boolean isAdmin) throws NoSuchUserException, InvalidAdminRightsException, RequestException, BadResponseException;
 }

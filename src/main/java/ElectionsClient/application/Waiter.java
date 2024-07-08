@@ -4,9 +4,12 @@
  */
 package ElectionsClient.application;
 
+import ElectionsClient.EntityClient.ElectionsTimeClient;
 import ElectionsClient.frames.ElectionsResultFrame;
 import ElectionsClient.frames.InfoFrame;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -15,20 +18,19 @@ import java.time.LocalDateTime;
 public class Waiter implements Runnable {
     
     private static long delay = 1L;
+    
+    @Getter
+    @Setter
     private static volatile boolean  exit = false;
-
+    
+    
+    @Setter
+    private static LocalDateTime ending;
+    
     private static Waiter waiter = new Waiter();
     
     public static Waiter getInstance(){
         return waiter;
-    }
-    
-    public static boolean getExit(){
-        return exit;
-    }
-    
-    public static void setExit(boolean value){
-        exit = value;
     }
     
     private Waiter(){
@@ -48,7 +50,7 @@ public class Waiter implements Runnable {
     
     @Override
     public void run() {
-        waitForTime(Elections.getDateTimeOfEnding()); //Сначала ждём конца выборов
+        waitForTime(ending); //Сначала ждём конца выборов
 
         if(Elections.getVoteFrame() != null){
             new ElectionsResultFrame().setVisible(true);

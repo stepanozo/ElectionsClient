@@ -14,52 +14,22 @@ import ElectionsClient.frames.VoteFrame;
 import ElectionsClient.model.Candidate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.stream.Stream;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Elections {
     
-    private static volatile LocalDateTime dateTimeOfBegining;
-    private static volatile LocalDateTime dateTimeOfEnding;
-    
+    @Getter
+    @Setter
     private static VoteFrame voteFrame; //Храним эту форму здесь, чтобы после окончания выборов её закрыть и заменить на форму результатов выборов.
+    
+    @Getter
+    @Setter
     private static CandidateFrame candidateFrame;
+    
+    @Getter
+    @Setter
     private static FilterFrame filterFrame;
-    
-    public static FilterFrame getFilterFrame(){
-        return filterFrame;
-    }
-    public static void setFilterFrame(FilterFrame newFilterFrame){
-        filterFrame = newFilterFrame;
-    }
-    
-    public static VoteFrame getVoteFrame(){
-        return voteFrame;
-    }
-    public static void setVoteFrame(VoteFrame newVoteFrame){
-        voteFrame = newVoteFrame;
-    }
-     public static CandidateFrame getCandidateFrame(){
-        return candidateFrame;
-    }
-    public static void setCandidateFrame(CandidateFrame newCandidateFrame){
-        candidateFrame = newCandidateFrame;
-    }
-    
-    public static LocalDateTime getDateTimeOfBegining(){
-        return dateTimeOfBegining;
-    }
-    
-    public static LocalDateTime getDateTimeOfEnding(){
-        return dateTimeOfEnding;
-    }
-     
-    public static void setTimeOfBegining(LocalDateTime newDateTimeOfBegining){
-        dateTimeOfBegining = newDateTimeOfBegining;
-    }
-    
-    public static void setTimeOfEnding(LocalDateTime newDateTimeOfEnding){
-        dateTimeOfEnding = newDateTimeOfEnding;
-    }
     
     public static double percentageOfVotes(Candidate candidate, HashSet<Candidate> candidates) {
         int sum = candidates.stream()

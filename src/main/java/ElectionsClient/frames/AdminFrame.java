@@ -5,11 +5,16 @@
 package ElectionsClient.frames;
 
 import ElectionsClient.EntityClient.ElectionsTimeClient;
+import ElectionsClient.EntityClient.UserClient;
 import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.Elections;
 import electionsClient.Exceptions.HTTPException;
 import ElectionsClient.Service.Http.HttpUtil;
+import ElectionsClient.application.ApplicationState;
+import ElectionsClient.application.MainClass;
+import electionsClient.Exceptions.NoElectionsException;
+import electionsClient.Exceptions.NoSuchUserException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 /**
@@ -155,6 +160,7 @@ public class AdminFrame extends javax.swing.JFrame {
         NewElectionsFrame newElectionsFrame = new NewElectionsFrame();
         newElectionsFrame.setAdminFrame(this);
         newElectionsFrame.setVisible(true);
+        disableAllButtons();
            
     }//GEN-LAST:event_newElectionsButtonActionPerformed
 
@@ -164,21 +170,45 @@ public class AdminFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_exitButtonActionPerformed
 
     private void addAdminRightsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAdminRightsButtonActionPerformed
-       
+        try{ //Проверим, что пользователь всё ещё админ
+            if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+                AddAdminRightsFrame addAdminRightsFrame = new AddAdminRightsFrame();
+                addAdminRightsFrame.setVisible(true);
+                addAdminRightsFrame.setAdminFrame(this);
+                disableAllButtons();
+            } else {
+            blockAdminButtons();
+            notAdminAnymore();
+            }
+        } catch (RequestException | NoSuchUserException | BadResponseException e){
+            new InfoFrame(e.getMessage()).setVisible(true);
+        }        
        
     }//GEN-LAST:event_addAdminRightsButtonActionPerformed
 
     private void removeAdminRightsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAdminRightsButtonActionPerformed
 
-        
+        try{ //Проверим, что пользователь всё ещё админ
+            if(UserClient.checkIfAdmin(ApplicationState.getCurrentUser().getLogin())){
+                RemoveAdminRightsFrame removeAdminRightsFrame = new RemoveAdminRightsFrame();
+                removeAdminRightsFrame.setVisible(true);
+                removeAdminRightsFrame.setAdminFrame(this);
+                disableAllButtons();
+            } else {
+            blockAdminButtons();
+            notAdminAnymore();
+            }
+        } catch (RequestException | NoSuchUserException | BadResponseException e){
+            new InfoFrame(e.getMessage()).setVisible(true);
+        }        
     }//GEN-LAST:event_removeAdminRightsButtonActionPerformed
 
     private void voteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voteButtonActionPerformed
         try{
             if(ElectionsTimeClient.electionsHaveRecords() &&
-                LocalDateTime.now().isAfter(Elections.getDateTimeOfBegining()) )
+                LocalDateTime.now().isAfter(ElectionsTimeClient.getLatestElectionsTime().getDateTimeOfBegining()) )
             {
-                if(LocalDateTime.now().isBefore(Elections.getDateTimeOfEnding())){
+                if(LocalDateTime.now().isBefore(ElectionsTimeClient.getLatestElectionsTime().getDateTimeOfEnding())){
                     VoteFrame voteFrame = new VoteFrame();
                     voteFrame.setVisible(true);
                 } else{
@@ -190,7 +220,7 @@ public class AdminFrame extends javax.swing.JFrame {
             else{
                 new InfoFrame("Выборы в данный момент не проводятся").setVisible(true);
             }
-        } catch(RequestException | BadResponseException e){
+        } catch(RequestException | BadResponseException | NoElectionsException e){
                 new InfoFrame(e.getMessage()).setVisible(true);
         }
         

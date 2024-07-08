@@ -13,6 +13,7 @@ import ElectionsClient.NewExceptions.BadResponseException;
 import ElectionsClient.NewExceptions.RequestException;
 import ElectionsClient.application.ApplicationState;
 import ElectionsClient.application.Elections;
+import electionsClient.Exceptions.NoElectionsException;
 import electionsClient.security.LoginData;
 import java.time.LocalDateTime;
 /**
@@ -159,27 +160,27 @@ public class LogInFrame extends javax.swing.JFrame {
                     }
                         else
                     {
-                         if(ElectionsTimeClient.electionsHaveRecords() &&
-                                    LocalDateTime.now().isAfter(Elections.getDateTimeOfBegining()) )
-                            {
-                                if(LocalDateTime.now().isBefore(Elections.getDateTimeOfEnding())){
-                                    VoteFrame voteFrame = new VoteFrame();
-                                    voteFrame.setVisible(true);
-                                } else{
-                                    ElectionsResultFrame resultFrame = new ElectionsResultFrame();
-                                    resultFrame.setVisible(true);
-                                }
-                                dispose();
+                        if(ElectionsTimeClient.electionsHaveRecords() &&
+                            LocalDateTime.now().isAfter(ElectionsTimeClient.getLatestElectionsTime().getDateTimeOfBegining()) )
+                        {
+                            if(LocalDateTime.now().isBefore(ElectionsTimeClient.getLatestElectionsTime().getDateTimeOfEnding())){
+                                VoteFrame voteFrame = new VoteFrame();
+                                voteFrame.setVisible(true);
+                            } else{
+                                ElectionsResultFrame resultFrame = new ElectionsResultFrame();
+                                resultFrame.setVisible(true);
                             }
-                            else{
-                                new InfoFrame("Выборы в данный момент не проводятся.").setVisible(true);
-                            }
+                            dispose();
+                        }
+                        else{
+                            new InfoFrame("Выборы в данный момент не проводятся").setVisible(true);
+                        }
                     }
                        
                 }   else wrongPasswordLabel.setText("Некорректно введён пароль");
             } else wrongPasswordLabel.setText("Некорректно введён логин");
            
-        } catch (RequestException | BadResponseException | WrongLoginOrPasswordException e){
+        } catch (RequestException | BadResponseException | WrongLoginOrPasswordException | NoElectionsException e){
             new InfoFrame(e.getMessage()).setVisible(true);
         }
                
